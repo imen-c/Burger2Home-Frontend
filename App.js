@@ -1,21 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-web';
+import * as React from 'react';
+import MainContainer from './navigation/MainContainer';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Hello React Native</Text>
-    </View>
+function App(){
+  return(
+      <MainContainer/> 
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-  flex: 1,
-    backgroundColor: '#faebd7',
-    justifyContent: 'center'
-    
-  },  
-  }
-);
+export default App;
