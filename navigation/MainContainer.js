@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
+import { AntDesign, Octicons } from '@expo/vector-icons';
+import colors from '../config/colors';
 
 import { NavigationContainer, TabActions } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -34,28 +36,31 @@ export default function MainContainer() {
             if (rn === homeName) {
               iconName = focused ? 'home' : 'home-outline';
 
-            } else if (rn === menuName) {
-              iconName = focused ? 'home' : 'home-outline';
+            } else if (rn === orderName) {
+              iconName = focused ? 'list-unordered' : 'list-unordered-outline';
 
-            } else if (rn === newsName) {
-                iconName = focused ? 'home' : 'home-outline';
-            } else if (rn === accountName) {
-                iconName = focused ? 'home' : 'home-outline';
-            }else if (rn === orderName) {
-                iconName = focused ? 'home' : 'home-outline';
+            }else if (rn === menuName) {
+              iconName = focused ? 'home' : 'home-outline';
+            }  else if (rn === newsName) {
+              iconName = focused ? 'home' : 'home-outline';
+            }else if (rn === accountName) {
+              iconName = focused ? 'home' : 'home-outline';
             }
 
 
             // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
+            return <AntDesign name="home" size={24} color="darkRed" />,
+            <Octicons name="list-unordered" size={24} color="darkRed" />;
           },
+          
         })}>
 
-        <Tab.Screen name={homeName} component={Home} />
-        <Tab.Screen name={menuName} component={Menu} />
+        <Tab.Screen name={homeName} component={Home} options={{headerShown:false}} />
+        <Tab.Screen name={orderName} component={Order} options={{headerShown:false}} />
+        <Tab.Screen name={menuName} component={Menu} options={{headerShown:false}} />
         <Tab.Screen name={newsName} component={News} />
-        <Tab.Screen name={accountName} component={MyAccount} />
-        <Tab.Screen name={orderName} component={Order} />
+        <Tab.Screen name={accountName} component={MyAccount} options={{headerShown:false}} />
+        
 
 
 
