@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
-import { AntDesign, Octicons } from '@expo/vector-icons';
+import { AntDesign, Octicons, FontAwesome, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
 
 import { NavigationContainer, TabActions } from '@react-navigation/native';
@@ -35,22 +35,26 @@ export default function MainContainer() {
 
             if (rn === homeName) {
               iconName = focused ? 'home' : 'home-outline';
+              return <AntDesign name="home" size={24} color="darkRed" /> 
 
             } else if (rn === orderName) {
-              iconName = focused ? 'list-unordered' : 'list-unordered-outline';
-
+              iconName = focused ? 'appstore-o' : 'appstore-O';
+              return <Octicons name="list-unordered" size={24} color="black" />
             }else if (rn === menuName) {
               iconName = focused ? 'home' : 'home-outline';
+             return <FontAwesome5 name="hamburger" size={24} color="black" />
             }  else if (rn === newsName) {
               iconName = focused ? 'home' : 'home-outline';
+              return<FontAwesome name="newspaper-o" size={24} color="black" />
             }else if (rn === accountName) {
               iconName = focused ? 'home' : 'home-outline';
+              return<MaterialCommunityIcons name="account-cowboy-hat" size={24} color="black" />
             }
 
 
             // You can return any component that you like here!
-            return <AntDesign name="home" size={24} color="darkRed" />,
-            <Octicons name="list-unordered" size={24} color="darkRed" />;
+            return <AntDesign name="home" size={24} color="darkRed" />;
+            
           },
           
         })}>

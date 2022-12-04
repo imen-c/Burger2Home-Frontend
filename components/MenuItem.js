@@ -1,27 +1,29 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
+import colors from '../config/colors';
 
-function MenuItem({title,decription,price}) {
+function MenuItem({title,description,photo}) {
     return (
-       <View style={styles.container}>
-           <image source={require('./assets/burger.png')}/>
-           <View>
-            <Text>{title}</Text>
-            <Text>{description}</Text>
-           </View>
-       </View>
+        <View style={styles.container}>
+        <Image style={styles.image} source={photo} />
+        <View>
+          <Text style={styles.title}>{title}</Text>
+          <Text >{description}</Text>
+        </View>
+      </View>
     );
 }
 
 const styles = StyleSheet.create({
 container: {
-flexDirection: "row"
+flexDirection: "row",
+marginBottom: 20,
 
 
 },
 image: {
-width: 90,
-height: 90,
+width: 120,
+height: 120,
 borderRadius: 10,
 marginRight: 10
 }
