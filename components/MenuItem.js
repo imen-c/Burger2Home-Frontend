@@ -22,8 +22,8 @@ marginBottom: 20,
 
 },
 image: {
-width: 120,
-height: 120,
+width: 150,
+height: 180,
 borderRadius: 10,
 marginRight: 10
 }
