@@ -8,7 +8,7 @@ export default function Home({ navigation }) {
             <View style={styles.header}>
                 <Text style={{color: "white"}}>HEADER</Text>
             </View>
-            <TouchableOpacity style={styles.Button} onPress={()=>navigation.navigate("MyAccount", {msg: "I came From Screen1"})}>
+            <TouchableOpacity style={styles.Button} onPress={()=>navigation.navigate("BurgerDetail", {msg: "I came From Screen1"})}>
                 <Text style={styles.ButtonText}>Click Me!</Text>
             </TouchableOpacity>
 

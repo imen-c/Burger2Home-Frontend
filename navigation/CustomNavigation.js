@@ -2,7 +2,7 @@ import React from 'react';
 
 import {createStackNavigator} from '@react-navigation/stack';
 import Home from './screens/Home';
-import MyAccount from './screens/MyAccount';
+import BurgerDetail from './screens/BurgerDetail';
 
 
 const Stack = createStackNavigator()
@@ -15,8 +15,8 @@ const FirstScreenNavigator = () => {
                 component={Home}
             />
             <Stack.Screen
-                name="MyAccount"
-                component={MyAccount}
+                name="BurgerDetail"
+                component={BurgerDetail}
             />
         </Stack.Navigator>
     )
