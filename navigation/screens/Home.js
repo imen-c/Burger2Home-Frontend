@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View,StyleSheet, Text } from 'react-native';
+import { View,StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 export default function Home({ navigation }) {
     return (
@@ -8,6 +8,9 @@ export default function Home({ navigation }) {
             <View style={styles.header}>
                 <Text style={{color: "white"}}>HEADER</Text>
             </View>
+            <TouchableOpacity style={styles.Button} onPress={()=>navigation.navigate("MyAccount", {msg: "I came From Screen1"})}>
+                <Text style={styles.ButtonText}>Click Me!</Text>
+            </TouchableOpacity>
 
 
             
@@ -42,4 +45,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
       },
+      Button:{
+        backgroundColor:'green',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        width:'50%',
+    },
+    ButtonText:{
+        textAlign:'center',
+        fontSize:18,
+        color:'#fff'
+    }
   });
