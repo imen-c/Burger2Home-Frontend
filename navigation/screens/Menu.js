@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, StyleSheet, FlatList, Text } from 'react-native';
+import { View, StyleSheet, FlatList, Text, TouchableOpacity , Image} from 'react-native';
+
 import MenuItem from '../../components/MenuItem';
 
 const listings = [
@@ -48,14 +49,22 @@ export default function Menu({navigation}) {
             </View>
             <View style={styles.filters}>
             <Text >Filters</Text>
+            <TouchableOpacity style={styles.Button} >
+                <Text style={styles.ButtonText}>Click Me!</Text>
+            </TouchableOpacity>
             </View>
                 
         <FlatList style={styles.listBurger}
         data={listings}
         keyExtractor={(burger) =>burger.id.toString()}
         renderItem ={({ item}) => (
-        <MenuItem
-        title={item.title} description={item.description} photo={item.image}/>
+          <TouchableOpacity style={styles.container} onPress={()=> navigation.navigate('BurgerDetail' )} >
+          <Image style={styles.image} source={item.image} />
+          <View>
+            <Text style={styles.title}>{item.title}</Text>
+            <Text >{item.description}</Text>
+          </View>
+        </TouchableOpacity>       
     )}/>
 
 
@@ -103,4 +112,16 @@ export default function Menu({navigation}) {
         left: 20,
         right: 20,
     },
+    container: {
+      flexDirection: "row",
+      marginBottom: 20,
+      
+      
+      },
+      image: {
+      width: 150,
+      height: 180,
+      borderRadius: 10,
+      marginRight: 10
+      }
   });

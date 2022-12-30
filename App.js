@@ -54,9 +54,9 @@ export default function App() {
           },
           
         })}>
-  <Tab.Screen name={homeName} component={FirstScreenNavigator}  />
+  <Tab.Screen name={homeName} component={Home} options={{headerShown:false}} />
         <Tab.Screen name={orderName} component={Order} options={{headerShown:false}} />
-        <Tab.Screen name={menuName} component={Menu} options={{headerShown:false}} />
+        <Tab.Screen name={menuName} component={FirstScreenNavigator} options={{headerShown:false}} />
         <Tab.Screen name={newsName} component={News} />
         <Tab.Screen name={accountName} component={MyAccount} options={{headerShown:false}} />
     

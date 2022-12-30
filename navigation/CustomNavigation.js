@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {createStackNavigator} from '@react-navigation/stack';
-import Home from './screens/Home';
+import Menu from './screens/Menu'
 import BurgerDetail from './screens/BurgerDetail';
 
 
@@ -11,8 +11,8 @@ const FirstScreenNavigator = () => {
     return(
         <Stack.Navigator>
             <Stack.Screen 
-                name="Home"
-                component={Home}
+                name="Menu"
+                component={Menu}
             />
             <Stack.Screen
                 name="BurgerDetail"
