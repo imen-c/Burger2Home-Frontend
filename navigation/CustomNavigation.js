@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {createStackNavigator} from '@react-navigation/stack';
-import Menu from './screens/Menu'
+import MenuList from './screens/MenuList';
 import BurgerDetail from './screens/BurgerDetail';
 
 
@@ -11,12 +11,14 @@ const FirstScreenNavigator = () => {
     return(
         <Stack.Navigator>
             <Stack.Screen 
-                name="Menu"
-                component={Menu}
+                name="MenuList"
+                component={MenuList}
+                options={{headerShown:false}}
             />
             <Stack.Screen
                 name="BurgerDetail"
                 component={BurgerDetail}
+                
             />
         </Stack.Navigator>
     )
