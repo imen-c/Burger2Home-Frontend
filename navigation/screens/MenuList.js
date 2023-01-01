@@ -84,7 +84,9 @@ export default function MenuList({ navigation }) {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.containerCell}
-              onPress={() => navigation.navigate("BurgerDetail")}
+              onPress={() =>
+                navigation.navigate("BurgerDetail", { item: item })
+              }
             >
               <Image
                 style={styles.image}
