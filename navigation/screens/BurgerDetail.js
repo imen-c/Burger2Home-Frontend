@@ -1,10 +1,29 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import CartContext from "../../components/cart-context";
+import Order from "./Order";
 import { AntDesign, Octicons } from "@expo/vector-icons";
 import { Button } from "react-native";
 
+const list = [{ name: "bug1" }];
 const BurgerDetail = ({ route }) => {
-  console.log(route.params.item.name);
+  console.log(orderItems);
+  console.log(list, "liste");
+
+  const [orderItems, setOrderItems] = React.useState([list]);
+
+  function editOrder(nameB) {
+    let orderList = orderItems.slice();
+    console.log(orderList);
+    const newItem = {
+      name: route.params.item.name,
+    };
+    orderList.push(newItem);
+    console.log(orderList, "list");
+
+    setOrderItems(orderList);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -22,7 +41,10 @@ const BurgerDetail = ({ route }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.addButton}>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => list.push(route.params.item.name)}
+      >
         <Text style={{ textAlign: "center" }}>
           AddToCart: {route.params.item.basePrice} €
         </Text>

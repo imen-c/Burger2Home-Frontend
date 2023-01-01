@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import {
   View,
   StyleSheet,
@@ -84,9 +85,7 @@ export default function MenuList({ navigation }) {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.containerCell}
-              onPress={() =>
-                navigation.navigate("BurgerDetail", { item: item })
-              }
+              onPress={() => navigation.navigate("BurgerDetail", { item })}
             >
               <Image
                 style={styles.image}
