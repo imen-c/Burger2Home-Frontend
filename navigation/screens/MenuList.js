@@ -77,8 +77,8 @@ export default function MenuList({ navigation }) {
                 source={require("../../assets/burger.png")}
               />
               <View>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text>{item.description}</Text>
+                <Text style={styles.title}>{item.name}</Text>
+                <Text style={styles.descriptionCell}>{item.description}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -105,9 +105,9 @@ const styles = StyleSheet.create({
   },
   containerCell: {
     backgroundColor: "#7fffd4",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "10%",
+    flexDirection: "row",
+    marginBottom: 20,
+    width: "100%",
   },
   filter: {
     width: "100%",
@@ -121,14 +121,27 @@ const styles = StyleSheet.create({
   },
   listBurger: {
     backgroundColor: `#ffd700`,
+    flex: 1,
     top: "2%",
     left: "2%",
     marginEnd: "2%",
+    width: "100%",
   },
   image: {
-    width: 150,
-    height: 180,
+    width: 100,
+    height: 140,
     borderRadius: 10,
     marginRight: 10,
+  },
+  title: {
+    paddingTop: 10,
+    width: 180,
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  descriptionCell: {
+    paddingStart: 15,
+    paddingTop: 40,
+    width: 250,
   },
 });
