@@ -61,7 +61,21 @@ export default function MenuList({ navigation }) {
   return (
     <SafeAreaView styles={styles.container}>
       <Text style={styles.header}>Burgers</Text>
-      <View style={styles.filter}></View>
+      <View style={styles.filter}>
+        <FlatList
+          style={styles.listFilters}
+          data={data.categories}
+          keyExtractor={({ id }, index) => id}
+          horizontal={true}
+          renderItem={({ item }) => (
+            <TouchableOpacity>
+              <View style={styles.rectangle}>
+                <Text style={styles.textFilters}>{item.name}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
       <View style={styles.listContainer}>
         <FlatList
           style={styles.listBurger}
@@ -143,5 +157,16 @@ const styles = StyleSheet.create({
     paddingStart: 15,
     paddingTop: 40,
     width: 250,
+  },
+  rectangle: {
+    height: 30,
+    width: 60,
+    backgroundColor: "salmon",
+    marginTop: 20,
+    marginStart: 10,
+  },
+  textFilters: {
+    textAlign: "center",
+    paddingTop: 8,
   },
 });
