@@ -1,22 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import Order from "./Order";
+import { orderListManage } from "./Order";
 import { AntDesign, Octicons } from "@expo/vector-icons";
-import { Button } from "react-native";
-export const getTempBucketData = () => {
-  return list;
-};
-export const list = [];
-const BurgerDetail = ({ route }) => {
-  console.log(orderItems);
-  console.log(list, "liste");
 
-  const [orderItems, setOrderItems] = React.useState([list]);
-  function edit(name) {
-    list.push(name);
+export var orderList = [];
+export function emptyCart() {
+  orderList = [];
+
+  console.log("je passe dans le emptyCart");
+  console.log(orderList, "apres empycart");
+}
+const BurgerDetail = ({ route }) => {
+  console.log(orderList, "liste detail");
+
+  const [orderItems, setOrderItems] = React.useState([orderList]);
+
+  function edit(item) {
+    var burger = {
+      name: item.name,
+      qty: 1,
+      price: item.basePrice,
+    };
+    orderList.push(burger);
+    setOrderItems(orderList);
+    console.log(orderList, "after EDIT");
+    console.log(orderItems, "items after EDIT");
+    //orderListManage.push(burger);
+    // console.log(orderListManage, "manage apres Add to cart");
   }
-  function editOrder(nameB) {
-    let orderList = orderItems.slice();
+  /*  function editOrder(nameB) {
+    var orderList = orderItems.slice();
     console.log(orderList);
     const newItem = {
       name: route.params.item.name,
@@ -25,6 +38,12 @@ const BurgerDetail = ({ route }) => {
     console.log(orderList, "list");
 
     setOrderItems(orderList);
+  } */
+  function unrase() {
+    setOrderItems((orderItems) => []);
+    orderList = [];
+    console.log(orderItems, "items after erase");
+    console.log(orderList, "liste after erase");
   }
 
   return (
@@ -38,7 +57,10 @@ const BurgerDetail = ({ route }) => {
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.idescription}>{route.params.item.description}</Text>
-        <TouchableOpacity style={{ width: "100%", height: 40 }}>
+        <TouchableOpacity
+          style={{ width: "100%", height: 40 }}
+          onPress={() => unrase()}
+        >
           <Text>
             Allergens <Octicons name="info" size={18} color="black" />
           </Text>
@@ -46,7 +68,7 @@ const BurgerDetail = ({ route }) => {
       </View>
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => edit(route.params.item.name)}
+        onPress={() => edit(route.params.item)}
       >
         <Text style={{ textAlign: "center" }}>
           AddToCart: {route.params.item.basePrice} €
