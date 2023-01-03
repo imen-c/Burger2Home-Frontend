@@ -1,5 +1,12 @@
 import * as React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  FlatList,
+} from "react-native";
 import { AntDesign, Octicons, Ionicons } from "@expo/vector-icons";
 import { orderList, emptyCart } from "./BurgerDetail";
 
@@ -12,9 +19,9 @@ export default function Order({ navigation }) {
     console.log(orderList, "liste apres trash");
   }
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safearea}>
       <View style={styles.header}>
-        <Text style={{ color: "white" }}>HEADER</Text>
+        <Text style={{ color: "black" }}>HEADER</Text>
         <TouchableOpacity style={styles.trash} onPress={() => todo()}>
           <Ionicons
             style={{ textAlign: "center" }}
@@ -22,36 +29,60 @@ export default function Order({ navigation }) {
             size={35}
             color="black"
           />
-          <Text>Vider le panier 22</Text>
+          <Text>Vider le panier </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        onPress={() => console.log(orderList, "liste ordre actuel")}
-      >
-        <Text>BUTTON</Text>
+
+      <FlatList
+        style={styles.listOrder}
+        data={orderList}
+        keyExtractor={(burger) => burger.name}
+        renderItem={({ item }) => <Text>{item.name}</Text>}
+      />
+
+      <TouchableOpacity style={styles.confirmButton}>
+        <Text style={{ textAlign: "center" }}>Passer commande</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safearea: {
     flex: 1,
     backgroundColor: "#7fffd4",
+    paddingTop: Platform.OS === "android" ? 25 : 0,
     alignItems: "center",
     justifyContent: "center",
   },
 
   header: {
+    position: "absolute",
+    top: 40,
     width: "100%",
     height: "12%",
     backgroundColor: "salmon",
-    position: "absolute",
-    top: 40,
   },
   trash: {
     position: "absolute",
     right: 5,
     bottom: 10,
+  },
+  listOrder: {
+    backgroundColor: `pink`,
+    marginTop: 85,
+    width: "90%",
+    left: 5,
+  },
+  confirmButton: {
+    position: "absolute",
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: `#dcdcdc`,
+    bottom: 10,
+    height: 40,
+    marginStart: 5,
+    marginEnd: 5,
+    width: "97%",
   },
 });
