@@ -17,6 +17,7 @@ const BurgerDetail = ({ route }) => {
 
   function edit(item) {
     var burger = {
+      id: item.id,
       name: item.name,
       qty: 1,
       price: item.basePrice,
