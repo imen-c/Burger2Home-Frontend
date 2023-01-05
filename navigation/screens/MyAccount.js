@@ -1,22 +1,25 @@
 import * as React from "react";
-import { View, Text, Button, Image, TouchableOpacity } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-//web : 847208551891-necii31vte9019a0bsa5d7tikv9dm1fg.apps.googleusercontent.com
-//ios: 847208551891-k56coiplhensr838oh6t2eq913j8lg6e.apps.googleusercontent.com
-//android: 847208551891-rsjduu0msth6q3dmc3oe0qei7q9j1l49.apps.googleusercontent.com
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
+
+//web 187568508686-jdjjciesnsfk4cvamgc1rc5qefc3p16m.apps.googleusercontent.com
+//ios 187568508686-d1ss60c460327h8uvp6nug8166plreqc.apps.googleusercontent.com
+//android 187568508686-39hd0ss5p80vmh76f1k4bnvupdve0cli.apps.googleusercontent.com
 
 WebBrowser.maybeCompleteAuthSession();
-export default function Home({ navigation }) {
+
+export default function MyAccount() {
   const [accessToken, setAccessToken] = React.useState(null);
   const [user, setUser] = React.useState(null);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     clientId:
-      "847208551891-necii31vte9019a0bsa5d7tikv9dm1fg.apps.googleusercontent.com",
+      "187568508686-jdjjciesnsfk4cvamgc1rc5qefc3p16m.apps.googleusercontent.com",
     iosClientId:
-      "847208551891-k56coiplhensr838oh6t2eq913j8lg6e.apps.googleusercontent.com",
+      "187568508686-d1ss60c460327h8uvp6nug8166plreqc.apps.googleusercontent.com",
     androidClientId:
-      "847208551891-rsjduu0msth6q3dmc3oe0qei7q9j1l49.apps.googleusercontent.com",
+      "187568508686-39hd0ss5p80vmh76f1k4bnvupdve0cli.apps.googleusercontent.com",
   });
 
   React.useEffect(() => {
@@ -33,6 +36,7 @@ export default function Home({ navigation }) {
     const useInfo = await response.json();
     setUser(useInfo);
   }
+
   const ShowUserInfo = () => {
     if (user) {
       return (
@@ -42,6 +46,10 @@ export default function Home({ navigation }) {
           <Text style={{ fontSize: 35, fontWeight: "bold", marginBottom: 20 }}>
             Welcome
           </Text>
+          <Text>: Sub:{user.sub}</Text>
+          <Text>user givenname: {user.given_name}</Text>
+          <Text>user familyname: {user.family_name}</Text>
+          <Text>email: {user.email}</Text>
           <Image
             source={{ uri: user.picture }}
             style={{ width: 100, height: 100, borderRadius: 50 }}
@@ -51,14 +59,9 @@ export default function Home({ navigation }) {
       );
     }
   };
+
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text
-        onPress={() => alert("MyB2h")}
-        style={{ fontSize: 26, fontWeight: "bold" }}
-      >
-        MYB2H
-      </Text>
+    <View style={styles.container}>
       {user && <ShowUserInfo />}
       {user === null && (
         <>
@@ -80,7 +83,7 @@ export default function Home({ navigation }) {
             }}
           >
             <Image
-              source={require("../../assets/btn.png")}
+              source={require("./btn.png")}
               style={{ width: 300, height: 40 }}
             />
           </TouchableOpacity>
@@ -89,3 +92,12 @@ export default function Home({ navigation }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

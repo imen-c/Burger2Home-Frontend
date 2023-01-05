@@ -1,15 +1,13 @@
 import * as React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { orderListManage } from "./Order";
 
 export default function Home({ navigation }) {
-  var liste = orderListManage;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={{ color: "white" }}>HEADER</Text>
       </View>
-      <TouchableOpacity onPress={() => console.log(orderListManage, "HOME")}>
+      <TouchableOpacity onPress={() => console.log("HOME")}>
         <Text>BUTTON</Text>
       </TouchableOpacity>
     </View>

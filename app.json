@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "projetTest",
-    "slug": "projetTest",
+    "name": "googlin",
+    "slug": "googlin",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "com.imen.googlin",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    
     "splash": {
-      "image": "./assets/Splashscreen.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -20,21 +20,21 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.imen.c.projetTest"
+      "bundleIdentifier": "com.imen.googlin"
     },
     "android": {
+      "package": "com.imen.googlin",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.imen.c.projetTest"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "64bb1929-b62e-4dcb-98dd-d7d3c1638aa6"
+        "projectId": "ac0f642f-7f24-4e03-93c6-9c907629d150"
       }
     }
   }

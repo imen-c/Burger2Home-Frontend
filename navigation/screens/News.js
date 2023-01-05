@@ -1,12 +1,49 @@
-import * as React from 'react';
-import { View, Text } from 'react-native';
+import * as React from "react";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-export default function News({navigation}) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text
-            onPress={() => alert('This is the News screen.')}
-            style={{ fontSize: 26, fontWeight: 'bold' }}>NEWS</Text>
+export default function News({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={{ color: "white" }}>HEADER</Text>
+      </View>
+      <TouchableOpacity onPress={() => console.log("HOME")}>
+        <Text>BUTTON</Text>
+      </TouchableOpacity>
     </View>
-    );
-  }
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#7fffd4",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  header: {
+    width: "100%",
+    height: "15%",
+    backgroundColor: "black",
+    position: "absolute",
+    top: 40,
+  },
+  body: {
+    width: "100%",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  Button: {
+    backgroundColor: "green",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    width: "50%",
+  },
+  ButtonText: {
+    textAlign: "center",
+    fontSize: 18,
+    color: "#fff",
+  },
+});
