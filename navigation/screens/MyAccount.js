@@ -2,6 +2,7 @@ import * as React from "react";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 
 //web 187568508686-jdjjciesnsfk4cvamgc1rc5qefc3p16m.apps.googleusercontent.com
@@ -28,6 +29,12 @@ export default function MyAccount() {
       accessToken && fetchUserInfo();
     }
   }, [response, accessToken]);
+/*   React.useEffect(() => {
+    const persistAuth = async () => {
+      await AsyncStorage.setItem("auth", JSON.stringify(useInfo.sub));
+    };
+    persistAuth();
+  }, [useInfo]); */
 
   async function fetchUserInfo() {
     let response = await fetch("https://www.googleapis.com/userinfo/v2/me", {
