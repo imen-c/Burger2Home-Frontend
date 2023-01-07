@@ -19,12 +19,6 @@ import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 WebBrowser.maybeCompleteAuthSession();
 
 export default function MyAccount() {
-  const [loginBackend, setLoginBackend] = React.useState({
-    email: "testEmail",
-    first_name: "imen",
-    last_name: "cheref",
-  });
-  const [call, setCall] = React.useState(false);
   const [accessToken, setAccessToken] = React.useState(null);
   const [user, setUser] = React.useState(null);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -63,7 +57,14 @@ export default function MyAccount() {
     .then((res) => res.json())
     .then((data) => {
       // enter you logic when the fetch is successful
-      console.log(data);
+      console.log("DATA", data);
+      console.log("retrieve data ", data.currentUser.email);
+      let userAsync = {
+        nom: data.currentUser.last_name,
+        prenom: data.currentUser.first_name,
+        token: data.token,
+      };
+      storeDataUser(userAsync);
     })
     .catch((error) => {
       // enter your logic for when there is an error (ex. error toast)
@@ -75,15 +76,30 @@ export default function MyAccount() {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const useInfo = await response.json();
-    setLoginBackend({
-      email: useInfo.email,
-      last_name: useInfo.family_name,
-      first_name: useInfo.given_name,
-    });
-    console.log(JSON.stringify(loginBackend));
+
     setUser(useInfo);
   }
 
+  const storeDataUser = async (dataAsync) => {
+    try {
+      const jsonValue = JSON.stringify(dataAsync);
+      await AsyncStorage.setItem("@user", jsonValue);
+      console.log("JSON Storage", jsonValue);
+    } catch (e) {
+      console.log("ASYNC storage erreur stock login");
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@user");
+      console.log("getData Info", jsonValue);
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // lance une erreur
+      console.log("ASYNC storage erreur getDATA");
+    }
+  };
   const ShowUserInfo = () => {
     if (user) {
       return (
@@ -115,9 +131,9 @@ export default function MyAccount() {
           <Text style={{ fontSize: 35, fontWeight: "bold" }}>Welcome</Text>
           <Button
             style={{ width: 300, height: 40 }}
-            title="Test"
+            title="getData "
             onPress={() => {
-              setCall(true);
+              getData();
             }}
           />
           <Text
@@ -140,13 +156,6 @@ export default function MyAccount() {
               source={require("./btn.png")}
               style={{ width: 300, height: 40 }}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setCall(true);
-            }}
-          >
-            <Text>{call.toString()}</Text>
           </TouchableOpacity>
         </>
       )}
