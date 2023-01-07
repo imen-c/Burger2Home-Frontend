@@ -49,7 +49,7 @@ export default function MyAccount() {
     persistAuth();
   }, [useInfo]); */
 
-  fetch("https://10.0.2.2:8000/signup", {
+  fetch("http://10.0.2.2:8000/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
