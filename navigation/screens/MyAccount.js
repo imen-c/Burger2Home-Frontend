@@ -1,7 +1,14 @@
 import * as React from "react";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Button,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 
@@ -12,6 +19,12 @@ import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 WebBrowser.maybeCompleteAuthSession();
 
 export default function MyAccount() {
+  const [loginBackend, setLoginBackend] = React.useState({
+    email: "testEmail",
+    first_name: "imen",
+    last_name: "cheref",
+  });
+  const [call, setCall] = React.useState(false);
   const [accessToken, setAccessToken] = React.useState(null);
   const [user, setUser] = React.useState(null);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -29,18 +42,45 @@ export default function MyAccount() {
       accessToken && fetchUserInfo();
     }
   }, [response, accessToken]);
-/*   React.useEffect(() => {
+  /*   React.useEffect(() => {
     const persistAuth = async () => {
       await AsyncStorage.setItem("auth", JSON.stringify(useInfo.sub));
     };
     persistAuth();
   }, [useInfo]); */
 
+  fetch("https://10.0.2.2:8000/signup", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: "ta@tbgugigguigu.com",
+      first_name: "tata",
+      last_name: "tutu",
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      // enter you logic when the fetch is successful
+      console.log(data);
+    })
+    .catch((error) => {
+      // enter your logic for when there is an error (ex. error toast)
+      console.log("ERROR", error);
+    });
+
   async function fetchUserInfo() {
     let response = await fetch("https://www.googleapis.com/userinfo/v2/me", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const useInfo = await response.json();
+    setLoginBackend({
+      email: useInfo.email,
+      last_name: useInfo.family_name,
+      first_name: useInfo.given_name,
+    });
+    console.log(JSON.stringify(loginBackend));
     setUser(useInfo);
   }
 
@@ -73,6 +113,13 @@ export default function MyAccount() {
       {user === null && (
         <>
           <Text style={{ fontSize: 35, fontWeight: "bold" }}>Welcome</Text>
+          <Button
+            style={{ width: 300, height: 40 }}
+            title="Test"
+            onPress={() => {
+              setCall(true);
+            }}
+          />
           <Text
             style={{
               fontSize: 25,
@@ -93,6 +140,13 @@ export default function MyAccount() {
               source={require("./btn.png")}
               style={{ width: 300, height: 40 }}
             />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setCall(true);
+            }}
+          >
+            <Text>{call.toString()}</Text>
           </TouchableOpacity>
         </>
       )}

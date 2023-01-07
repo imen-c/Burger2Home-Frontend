@@ -53,7 +53,7 @@ export default function MenuList({ navigation }) {
   console.log(data);
 
   useEffect(() => {
-    fetch("http://localhost:3001/burgers")
+    fetch("http://10.0.2.2:3001/burgers")
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => console.error(error))
