@@ -18,7 +18,9 @@ import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 
 WebBrowser.maybeCompleteAuthSession();
 
+export const userReceived = false;
 export default function MyAccount() {
+  const [userAsync, setUserAsync] = React.useState();
   const [accessToken, setAccessToken] = React.useState(null);
   const [user, setUser] = React.useState(null);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -36,12 +38,6 @@ export default function MyAccount() {
       accessToken && fetchUserInfo();
     }
   }, [response, accessToken]);
-  /*   React.useEffect(() => {
-    const persistAuth = async () => {
-      await AsyncStorage.setItem("auth", JSON.stringify(useInfo.sub));
-    };
-    persistAuth();
-  }, [useInfo]); */
 
   fetch("http://10.0.2.2:8000/signup", {
     method: "POST",
@@ -58,12 +54,14 @@ export default function MyAccount() {
     .then((data) => {
       // enter you logic when the fetch is successful
       console.log("DATA", data);
+      userReceived = true;
+      console.log(userReceived);
       console.log("retrieve data ", data.currentUser.email);
-      let userAsync = {
+      setUserAsync({
         nom: data.currentUser.last_name,
         prenom: data.currentUser.first_name,
         token: data.token,
-      };
+      });
       storeDataUser(userAsync);
     })
     .catch((error) => {
