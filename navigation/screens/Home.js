@@ -7,27 +7,11 @@ import { userReceived } from "./MyAccount";
 
 export default function Home({ navigation }) {
   React.useEffect(() => {
-    console.log("un event est detecte from HOME");
-  }, [navigation]);
-
-  const getUser = () => {
-    console.log("userReceived HOME", userReceived);
-  };
-  React.useEffect(() => {
-    if (navigation.isFocused()) {
-      console.log("un focus HOME est detecte"); // replace with your function
-    }
-  }, [navigation.isFocused()]);
-
-  React.useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", (e) => {
       // Prevent default behavior
       //e.preventDefault();
       console.log("listener activé");
       getData();
-
-      // Do something manually
-      // ...
     });
 
     const getData = async () => {
