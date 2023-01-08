@@ -1,4 +1,5 @@
 import * as React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -21,12 +22,22 @@ export default function Order({ navigation }) {
       // Prevent default behavior
       //e.preventDefault();
       console.log("listener activé ORDER");
-      setFocus(true);
-      setFocus(false);
-
+      let cart = getCart();
+      setCart(cart);
       // Do something manually
       // ...
     });
+    const getCart = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem("@cart");
+
+        console.log("CART storage", jsonValue);
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+      } catch (e) {
+        // lance une erreur
+        console.log("ASYNC storage erreur getCart");
+      }
+    };
 
     return unsubscribe;
   }, [navigation]);
@@ -36,6 +47,7 @@ export default function Order({ navigation }) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [messages, setMessages] = React.useState([]);
   const [isFocus, setFocus] = React.useState();
+  const [cart, setCart] = React.useState();
 
   function todo() {
     console.log(orderList), "liste reçu par order";
@@ -74,7 +86,7 @@ export default function Order({ navigation }) {
         <FlatList
           style={styles.listOrder}
           data={orderList}
-          extraData={isFocus}
+          extraData={cart}
           keyExtractor={(burger) => burger.name}
           renderItem={({ item }) => <Text>{item.name}</Text>}
         />

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { orderListManage } from "./Order";
 import { AntDesign, Octicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 global.cartList = [];
 export var orderList = [];
@@ -14,7 +15,7 @@ export function emptyCart() {
 const BurgerDetail = ({ route }) => {
   console.log(orderList, "liste detail");
 
-  const [orderItems, setOrderItems] = React.useState([orderList]);
+  const [orderItems, setOrderItems] = React.useState(orderList);
 
   function edit(item) {
     var burger = {
@@ -26,8 +27,10 @@ const BurgerDetail = ({ route }) => {
     orderList.push(burger);
     cartList.push(burger);
     setOrderItems(orderList);
+    storeCart(orderItems);
     console.log(orderList, "after EDIT");
     console.log(orderItems, "items after EDIT");
+
     //orderListManage.push(burger);
     // console.log(orderListManage, "manage apres Add to cart");
   }
@@ -48,6 +51,15 @@ const BurgerDetail = ({ route }) => {
     console.log(orderItems, "items after erase");
     console.log(orderList, "liste after erase");
   }
+  const storeCart = async (dataAsync) => {
+    try {
+      let jsonValue = JSON.stringify(dataAsync);
+      await AsyncStorage.setItem("@cart", jsonValue);
+      console.log("JSON Storage CART", jsonValue);
+    } catch (e) {
+      console.log("ASYNC storage erreur Cart", e.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
