@@ -16,14 +16,33 @@ import { orderList, emptyCart } from "./BurgerDetail";
 const messages = [];
 
 export default function Order({ navigation }) {
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("tabPress", (e) => {
+      // Prevent default behavior
+      //e.preventDefault();
+      console.log("listener activé ORDER");
+      setFocus(true);
+      setFocus(false);
+
+      // Do something manually
+      // ...
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+  React.useEffect(() => {
+    console.log("isFocus changed");
+  }, [isFocus]);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [messages, setMessages] = React.useState([]);
-  console.log(orderList, "liste order");
+  const [isFocus, setFocus] = React.useState();
 
   function todo() {
     console.log(orderList), "liste reçu par order";
     emptyCart();
     console.log(orderList, "liste apres trash");
+    setFocus(true);
+    setFocus(false);
   }
   const ChooseAdress = () => {
     if (messages == []) {
@@ -55,6 +74,7 @@ export default function Order({ navigation }) {
         <FlatList
           style={styles.listOrder}
           data={orderList}
+          extraData={isFocus}
           keyExtractor={(burger) => burger.name}
           renderItem={({ item }) => <Text>{item.name}</Text>}
         />

@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { orderListManage } from "./Order";
 import { AntDesign, Octicons } from "@expo/vector-icons";
 
+global.cartList = [];
 export var orderList = [];
 export function emptyCart() {
   orderList = [];
@@ -23,6 +24,7 @@ const BurgerDetail = ({ route }) => {
       price: item.basePrice,
     };
     orderList.push(burger);
+    cartList.push(burger);
     setOrderItems(orderList);
     console.log(orderList, "after EDIT");
     console.log(orderItems, "items after EDIT");
