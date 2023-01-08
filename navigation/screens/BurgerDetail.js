@@ -4,7 +4,6 @@ import { orderListManage } from "./Order";
 import { AntDesign, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-global.cartList = [];
 export var orderList = [];
 export function emptyCart() {
   orderList = [];
@@ -25,32 +24,13 @@ const BurgerDetail = ({ route }) => {
       price: item.basePrice,
     };
     orderList.push(burger);
-    cartList.push(burger);
     setOrderItems(orderList);
     storeCart(orderItems);
+
     console.log(orderList, "after EDIT");
     console.log(orderItems, "items after EDIT");
-
-    //orderListManage.push(burger);
-    // console.log(orderListManage, "manage apres Add to cart");
   }
-  /*  function editOrder(nameB) {
-    var orderList = orderItems.slice();
-    console.log(orderList);
-    const newItem = {
-      name: route.params.item.name,
-    };
-    orderList.push(newItem);
-    console.log(orderList, "list");
 
-    setOrderItems(orderList);
-  } */
-  function unrase() {
-    setOrderItems((orderItems) => []);
-    orderList = [];
-    console.log(orderItems, "items after erase");
-    console.log(orderList, "liste after erase");
-  }
   const storeCart = async (dataAsync) => {
     try {
       let jsonValue = JSON.stringify(dataAsync);

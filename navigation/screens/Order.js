@@ -24,6 +24,10 @@ export default function Order({ navigation }) {
       console.log("listener activé ORDER");
       let cart = getCart();
       setCart(cart);
+      if (user == null) {
+        let us = getDataUser();
+        setUser(us);
+      }
       // Do something manually
       // ...
     });
@@ -38,6 +42,17 @@ export default function Order({ navigation }) {
         console.log("ASYNC storage erreur getCart");
       }
     };
+    const getDataUser = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem("@user");
+        console.log("getData Info", jsonValue);
+        setToken(JSON.parse(jsonValue).token);
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+      } catch (e) {
+        // lance une erreur
+        console.log("ASYNC storage erreur getDATA");
+      }
+    };
 
     return unsubscribe;
   }, [navigation]);
@@ -45,6 +60,8 @@ export default function Order({ navigation }) {
     console.log("isFocus changed");
   }, [isFocus]);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [user, setUser] = React.useState();
+  const [token, setToken] = React.useState();
   const [messages, setMessages] = React.useState([]);
   const [isFocus, setFocus] = React.useState();
   const [cart, setCart] = React.useState();
@@ -67,57 +84,83 @@ export default function Order({ navigation }) {
       );
     }
   };
+  const UserConnected = () => {
+    if (user) {
+      return (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text style={{ fontSize: 35, fontWeight: "bold", marginBottom: 20 }}>
+            Welcome
+          </Text>
+          <Image
+            source={{ uri: user.picture }}
+            style={{ width: 100, height: 100, borderRadius: 50 }}
+          />
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>{user.name}</Text>
+        </View>
+      );
+    }
+  };
+
+  const VerifyLogin = () => {
+    setModalVisible(true);
+  };
   return (
     <SafeAreaView style={styles.safearea}>
-      <>
-        <View style={styles.header}>
-          <Text style={{ color: "black" }}>HEADER</Text>
-          <TouchableOpacity style={styles.trash} onPress={() => todo()}>
+      <View style={styles.header}>
+        <Text style={{ color: "black" }}>HEADER</Text>
+        <TouchableOpacity style={styles.trash} onPress={() => todo()}>
+          <Ionicons
+            style={{ textAlign: "center" }}
+            name="md-trash-outline"
+            size={35}
+            color="black"
+          />
+          <Text>Vider le panier </Text>
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        style={styles.listOrder}
+        data={orderList}
+        extraData={cart}
+        keyExtractor={(burger) => burger.name}
+        renderItem={({ item }) => <Text>{item.name}</Text>}
+      />
+
+      <TouchableOpacity
+        style={styles.confirmButton}
+        onPress={() => VerifyLogin()}
+      >
+        <Text style={{ textAlign: "center" }}>Passer commande</Text>
+      </TouchableOpacity>
+      <Modal style={styles.modal} visible={modalVisible} animationType="slide">
+        <SafeAreaView>
+          <ChooseAdress />
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
             <Ionicons
-              style={{ textAlign: "center" }}
-              name="md-trash-outline"
-              size={35}
+              style={styles.modalClose}
+              name="close-circle-outline"
+              size={20}
               color="black"
             />
-            <Text>Vider le panier </Text>
           </TouchableOpacity>
-        </View>
-
-        <FlatList
-          style={styles.listOrder}
-          data={orderList}
-          extraData={cart}
-          keyExtractor={(burger) => burger.name}
-          renderItem={({ item }) => <Text>{item.name}</Text>}
-        />
-
-        <TouchableOpacity
-          style={styles.confirmButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={{ textAlign: "center" }}>Passer commande</Text>
-        </TouchableOpacity>
-        <Modal
-          style={styles.modal}
-          visible={modalVisible}
-          animationType="slide"
-        >
-          <SafeAreaView>
-            <ChooseAdress />
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Ionicons
-                style={styles.modalClose}
-                name="close-circle-outline"
-                size={20}
-                color="black"
-              />
-            </TouchableOpacity>
-            <View>
-              <Text style={styles.modalTitle}>Options de livraison</Text>
-            </View>
-          </SafeAreaView>
-        </Modal>
-      </>
+          {user == null && (
+            <>
+              <Text style={{ fontSize: 35, fontWeight: "bold" }}>Welcome</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("MyAccount")}
+              >
+                <Text>Connectez-Vous</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          <View>
+            <Text style={styles.modalTitle}>Options de livraison</Text>
+          </View>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 }
