@@ -17,6 +17,25 @@ import { LoginScreenNavigator } from "../CustomNavigation";
 
 export default function Order({ navigation }) {
   React.useEffect(() => {
+    console.log("changement sur User Load des addresses");
+    //console.log("token", JSON.parse(token));
+
+    let us = getDataUser();
+    setUser(us);
+    //let token = getToken();
+    //setToken(token);
+  }, [user]);
+  React.useEffect(() => {
+    console.log("1ere fois");
+    //console.log("token", JSON.parse(token));
+    if (user == null) {
+      let us = getDataUser();
+      setUser(us);
+      //let token = getToken();
+      //setToken(token);
+    }
+  }, []);
+  React.useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", (e) => {
       // Prevent default behavior
       //e.preventDefault();
@@ -60,45 +79,46 @@ export default function Order({ navigation }) {
       }
     };
 
-    const getDataUser = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem("@user");
-        console.log("getUser Info", jsonValue);
-        //setToken(JSON.parse(jsonValue).token);
-        console.log("PARSE token", JSON.parse(jsonValue).token);
-        let t = JSON.parse(jsonValue).token;
-        console.log("TOKEN to String", t.toString());
-        setToken(t.toString());
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-      } catch (e) {
-        // lance une erreur
-        console.log("ASYNC storage erreur getDATA");
-      }
-    };
-
     return unsubscribe;
   }, [navigation]);
+  const getDataUser = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@user");
+      console.log("getUser Info", jsonValue);
+      //setToken(JSON.parse(jsonValue).token);
+      console.log("PARSE token", JSON.parse(jsonValue).token);
+      let t = JSON.parse(jsonValue).token;
+      console.log("TOKEN to String", t.toString());
+      setToken(t.toString());
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // lance une erreur
+      console.log("ASYNC storage erreur getDATA");
+    }
+  };
   const getAddresses = async () => {
-    await fetch("http://10.0.2.2:8000/addresses", {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token.toString()}` },
-    })
-      .then((response) => response.json())
-      .then((json) => setAddresses(json))
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false));
+    if (!(token == undefined)) {
+      await fetch("http://10.0.2.2:8000/addresses", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token.toString()}` },
+      })
+        .then((response) => response.json())
+        .then((json) => setAddresses(json))
+        .catch((error) => console.error(error))
+        .finally(() => setLoading(false));
 
-    console.log("Addresses recçue", addresses);
-    console.log("passer commande");
-    console.log("USER ", user);
-    console.log("TOKEN passer commande", token);
+      console.log("Addresses recçue", addresses);
+      console.log("passer commande");
+      console.log("USER ", user);
+      console.log("TOKEN passer commande", token);
+    }
   };
 
   const [modalVisible, setModalVisible] = React.useState(false);
   const [user, setUser] = React.useState();
   const [token, setToken] = React.useState();
   const [isLoading, setLoading] = React.useState(true);
-  const [addresses, setAddresses] = React.useState();
+  const [addresses, setAddresses] = React.useState([]);
   const [cart, setCart] = React.useState();
 
   React.useEffect(() => {
@@ -110,19 +130,49 @@ export default function Order({ navigation }) {
     console.log(orderList), "liste reçu par order";
     emptyCart();
     console.log(orderList, "liste apres trash");
-    setFocus(true);
-    setFocus(false);
   }
-  const ChooseAdress = () => {
-    <View>
-      <Text style={styles.modalTitle}>Options de livraison</Text>
-    </View>;
 
+  const ChooseAdress = () => {
     return (
-      <View style={styles.modalAddAdress}>
+      <View>
+        {addresses.length > 0 && <AdressReceived />}
+        {(addresses === undefined || addresses.length == 0) && (
+          <SafeAreaView>
+            <Text
+              style={{
+                fontSize: 35,
+                fontWeight: "bold",
+                position: "absolute",
+                top: 120,
+                marginStart: 35,
+              }}
+            >
+              Pas d'adresse encodé
+            </Text>
+            <View style={styles.modalAddAdress}>
+              <TextInput style={styles.inputText} placeholder="Adresse 1" />
+              <TextInput style={styles.inputText} placeholder="Adresse 2" />
+              <TextInput style={styles.inputText} placeholder="Adresse 3" />
+              <TouchableOpacity style={styles.modalSaveNewAdress}>
+                <Text>Enregistrer</Text>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        )}
+      </View>
+    );
+  };
+  const AdressReceived = () => {
+    return (
+      <View>
+        <Text style={styles.modalTitle}>Options de livraison</Text>
+        <Text style={styles.modalSubTitle}>Adresse RECEIVED</Text>
+
+        {/*       <View style={styles.modalAddAdress}>
         <TextInput style={styles.inputText} placeholder="Adresse 1" />
         <TextInput style={styles.inputText} placeholder="Adresse 2" />
         <TextInput style={styles.inputText} placeholder="Adresse 3" />
+      </View> */}
       </View>
     );
   };
@@ -248,7 +298,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 25,
     left: 20,
-    top: 30,
+    top: "50%",
+  },
+  modalSubTitle: {
+    top: "40%",
   },
   modalClose: {
     position: "absolute",
@@ -294,14 +347,19 @@ const styles = StyleSheet.create({
     width: "97%",
   },
   modalAddAdress: {
+    marginStart: 35,
+    marginTop: 50,
     backgroundColor: "pink",
     width: "80%",
+    top: 180,
   },
   inputText: {
     borderColor: "#ccc",
     backgroundColor: "blue",
-    top: 100,
-    width: 80,
+    marginBottom: 30,
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+    width: "100%",
   },
   modalConnect: {
     position: "absolute",
@@ -315,5 +373,9 @@ const styles = StyleSheet.create({
     height: 50,
     width: "50%",
     paddingStart: 10,
+  },
+  modalSaveNewAdress: {
+    backgroundColor: "gray",
+    justifyContent: "center",
   },
 });

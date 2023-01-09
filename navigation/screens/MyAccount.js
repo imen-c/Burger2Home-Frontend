@@ -49,9 +49,9 @@ export default function MyAccount({ navigation }) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      email: "ta@gojhooooooo.com",
-      first_name: "jMena",
-      last_name: "cher",
+      email: "ta@gojhoooo.com",
+      first_name: "sans-adresse",
+      last_name: "personne",
     }),
   })
     .then((res) => res.json())
