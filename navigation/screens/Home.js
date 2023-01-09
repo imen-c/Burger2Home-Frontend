@@ -6,10 +6,12 @@ import { useFocusEffect } from "@react-navigation/native";
 import { userReceived } from "./MyAccount";
 
 export default function Home({ navigation }) {
+  const [token, setToken] = React.useState();
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", (e) => {
       console.log("listener activé");
-      getData();
+      let user = getData();
+      console.log("User de home", user.first_name);
     });
 
     const getData = async () => {
@@ -17,6 +19,11 @@ export default function Home({ navigation }) {
         const jsonValue = await AsyncStorage.getItem("@user");
 
         console.log("user CONNECTé", jsonValue);
+        console.log("user connecte DETAIL, ", jsonValue.nom);
+        console.log("PARSE token", JSON.parse(jsonValue).token);
+        let t = JSON.parse(jsonValue).token;
+        console.log("t ?????", t.toString());
+        setToken(t);
         return jsonValue != null ? JSON.parse(jsonValue) : null;
       } catch (e) {
         // lance une erreur
@@ -32,8 +39,8 @@ export default function Home({ navigation }) {
       <View style={styles.header}>
         <Text style={{ color: "white" }}>HEADER</Text>
       </View>
-      <TouchableOpacity onPress={() => getUser()}>
-        <Text>BUTTON</Text>
+      <TouchableOpacity onPress={() => console.log(token)}>
+        <Text>BUTTON </Text>
       </TouchableOpacity>
     </View>
   );

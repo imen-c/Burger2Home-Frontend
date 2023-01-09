@@ -15,22 +15,38 @@ import { AntDesign, Octicons, Ionicons } from "@expo/vector-icons";
 import { orderList, emptyCart } from "./BurgerDetail";
 import { LoginScreenNavigator } from "../CustomNavigation";
 
-const messages = [];
-
 export default function Order({ navigation }) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", (e) => {
       // Prevent default behavior
       //e.preventDefault();
-      console.log("listener activé ORDER");
+      console.log("TabPress");
       let cart = getCart();
       setCart(cart);
       if (user == null) {
         let us = getDataUser();
         setUser(us);
+        //let token = getToken();
+        //setToken(token);
       }
+      getAddresses();
+
       // Do something manually
       // ...
+
+      fetch("http://10.0.2.2:8000/addresses", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token.toString()}` },
+      })
+        .then((response) => response.json())
+        .then((json) => setAddresses(json))
+        .catch((error) => console.error(error))
+        .finally(() => setLoading(false));
+
+      console.log("Addresses recçue", addresses);
+      console.log("passer commande");
+      console.log("USER ", user);
+      console.log("TOKEN passer commande", token);
     });
     const getCart = async () => {
       try {
@@ -43,11 +59,16 @@ export default function Order({ navigation }) {
         console.log("ASYNC storage erreur getCart");
       }
     };
+
     const getDataUser = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem("@user");
-        console.log("getData Info", jsonValue);
-        setToken(JSON.parse(jsonValue).token);
+        console.log("getUser Info", jsonValue);
+        //setToken(JSON.parse(jsonValue).token);
+        console.log("PARSE token", JSON.parse(jsonValue).token);
+        let t = JSON.parse(jsonValue).token;
+        console.log("TOKEN to String", t.toString());
+        setToken(t.toString());
         return jsonValue != null ? JSON.parse(jsonValue) : null;
       } catch (e) {
         // lance une erreur
@@ -57,15 +78,33 @@ export default function Order({ navigation }) {
 
     return unsubscribe;
   }, [navigation]);
-  React.useEffect(() => {
-    console.log("isFocus changed");
-  }, [isFocus]);
+  const getAddresses = async () => {
+    await fetch("http://10.0.2.2:8000/addresses", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token.toString()}` },
+    })
+      .then((response) => response.json())
+      .then((json) => setAddresses(json))
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+
+    console.log("Addresses recçue", addresses);
+    console.log("passer commande");
+    console.log("USER ", user);
+    console.log("TOKEN passer commande", token);
+  };
+
   const [modalVisible, setModalVisible] = React.useState(false);
   const [user, setUser] = React.useState();
   const [token, setToken] = React.useState();
-  const [messages, setMessages] = React.useState([]);
-  const [isFocus, setFocus] = React.useState();
+  const [isLoading, setLoading] = React.useState(true);
+  const [addresses, setAddresses] = React.useState();
   const [cart, setCart] = React.useState();
+
+  React.useEffect(() => {
+    console.log("changement sur User Load des addresses");
+    //console.log("token", JSON.parse(token));
+  }, [user]);
 
   function todo() {
     console.log(orderList), "liste reçu par order";
@@ -75,36 +114,25 @@ export default function Order({ navigation }) {
     setFocus(false);
   }
   const ChooseAdress = () => {
-    if (messages == []) {
-      return (
-        <View style={styles.modalAddAdress}>
-          <TextInput style={styles.inputText} placeholder="Adresse 1" />
-          <TextInput style={styles.inputText} placeholder="Adresse 2" />
-          <TextInput style={styles.inputText} placeholder="Adresse 3" />
-        </View>
-      );
-    }
-  };
-  const UserConnected = () => {
-    if (user) {
-      return (
-        <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-          <Text style={{ fontSize: 35, fontWeight: "bold", marginBottom: 20 }}>
-            Welcome
-          </Text>
-          <Image
-            source={{ uri: user.picture }}
-            style={{ width: 100, height: 100, borderRadius: 50 }}
-          />
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>{user.name}</Text>
-        </View>
-      );
-    }
+    <View>
+      <Text style={styles.modalTitle}>Options de livraison</Text>
+    </View>;
+
+    return (
+      <View style={styles.modalAddAdress}>
+        <TextInput style={styles.inputText} placeholder="Adresse 1" />
+        <TextInput style={styles.inputText} placeholder="Adresse 2" />
+        <TextInput style={styles.inputText} placeholder="Adresse 3" />
+      </View>
+    );
   };
 
   const VerifyLogin = () => {
+    getAddresses();
+    console.log("Addresses recçue", addresses);
+    console.log("passer commande");
+    console.log("USER ", user);
+    console.log("TOKEN passer commande", token);
     setModalVisible(true);
   };
   return (
@@ -138,7 +166,6 @@ export default function Order({ navigation }) {
       </TouchableOpacity>
       <Modal style={styles.modal} visible={modalVisible} animationType="slide">
         <SafeAreaView>
-          <ChooseAdress />
           <TouchableOpacity onPress={() => setModalVisible(false)}>
             <Ionicons
               style={styles.modalClose}
@@ -147,17 +174,28 @@ export default function Order({ navigation }) {
               color="black"
             />
           </TouchableOpacity>
+          {user && <ChooseAdress />}
           {user == null && (
-            <>
-              <Text style={{ fontSize: 35, fontWeight: "bold" }}>Welcome</Text>
-              <TouchableOpacity onPress={() => navigation.navigate("MyB2H")}>
+            <SafeAreaView>
+              <Text
+                style={{
+                  fontSize: 35,
+                  fontWeight: "bold",
+                  position: "absolute",
+                  top: 120,
+                  marginStart: 35,
+                }}
+              >
+                Welcome
+              </Text>
+              <TouchableOpacity
+                style={styles.modalConnect}
+                onPress={() => navigation.navigate("MyB2H")}
+              >
                 <Text>Connectez-Vous</Text>
               </TouchableOpacity>
-            </>
+            </SafeAreaView>
           )}
-          <View>
-            <Text style={styles.modalTitle}>Options de livraison</Text>
-          </View>
         </SafeAreaView>
       </Modal>
     </SafeAreaView>
@@ -264,5 +302,18 @@ const styles = StyleSheet.create({
     backgroundColor: "blue",
     top: 100,
     width: 80,
+  },
+  modalConnect: {
+    position: "absolute",
+    top: 250,
+    marginStart: 40,
+    alignContent: "center",
+    justifyContent: "center",
+    borderColor: "black",
+    borderRadius: 10,
+    borderWidth: 2,
+    height: 50,
+    width: "50%",
+    paddingStart: 10,
   },
 });

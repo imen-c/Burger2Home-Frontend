@@ -18,7 +18,7 @@ import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 
 WebBrowser.maybeCompleteAuthSession();
 
-export default function MyAccount({}) {
+export default function MyAccount({ navigation }) {
   const [accessToken, setAccessToken] = React.useState(null);
   const [user, setUser] = React.useState(null);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -49,9 +49,9 @@ export default function MyAccount({}) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      email: "ta@tbgugigguigu.com",
-      first_name: "tata",
-      last_name: "tutu",
+      email: "ta@gojhooooooo.com",
+      first_name: "jMena",
+      last_name: "cher",
     }),
   })
     .then((res) => res.json())
@@ -64,6 +64,8 @@ export default function MyAccount({}) {
         prenom: data.currentUser.first_name,
         token: data.token,
       };
+      console.log("TOKEN de user async", data.token);
+      storeToken(data.token);
       storeDataUser(userAsync);
     })
     .catch((error) => {
@@ -79,6 +81,16 @@ export default function MyAccount({}) {
 
     setUser(useInfo);
   }
+
+  const storeToken = async (token) => {
+    try {
+      const jsonValue = JSON.stringify(dataAsync);
+      await AsyncStorage.setItem("@token", jsonValue);
+      console.log("token Storage", jsonValue);
+    } catch (e) {
+      console.log("ASYNC storage erreur stock login");
+    }
+  };
 
   const storeDataUser = async (dataAsync) => {
     try {
