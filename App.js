@@ -8,7 +8,10 @@ import {
   FontAwesome5,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { FirstScreenNavigator } from "./navigation/CustomNavigation";
+import {
+  FirstScreenNavigator,
+  LoginScreenNavigator,
+} from "./navigation/CustomNavigation";
 import Order from "./navigation/screens/Order";
 import Home from "./navigation/screens/Home";
 import News from "./navigation/screens/News";

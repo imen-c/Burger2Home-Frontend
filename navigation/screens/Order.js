@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { AntDesign, Octicons, Ionicons } from "@expo/vector-icons";
 import { orderList, emptyCart } from "./BurgerDetail";
+import { LoginScreenNavigator } from "../CustomNavigation";
 
 const messages = [];
 
@@ -149,9 +150,7 @@ export default function Order({ navigation }) {
           {user == null && (
             <>
               <Text style={{ fontSize: 35, fontWeight: "bold" }}>Welcome</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("MyAccount")}
-              >
+              <TouchableOpacity onPress={() => navigation.navigate("MyB2H")}>
                 <Text>Connectez-Vous</Text>
               </TouchableOpacity>
             </>

@@ -18,7 +18,7 @@ import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 
 WebBrowser.maybeCompleteAuthSession();
 
-export default function MyAccount({ navigation }) {
+export default function MyAccount({}) {
   const [accessToken, setAccessToken] = React.useState(null);
   const [user, setUser] = React.useState(null);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
