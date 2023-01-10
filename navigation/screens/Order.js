@@ -22,8 +22,6 @@ export default function Order({ navigation }) {
 
     let us = getDataUser();
     setUser(us);
-    //let token = getToken();
-    //setToken(token);
   }, [user]);
   React.useEffect(() => {
     console.log("1ere fois");
@@ -88,8 +86,8 @@ export default function Order({ navigation }) {
       //setToken(JSON.parse(jsonValue).token);
       console.log("PARSE token", JSON.parse(jsonValue).token);
       let t = JSON.parse(jsonValue).token;
-      console.log("TOKEN to String", t.toString());
-      setToken(t.toString());
+      console.log("TOKEN to String", t);
+      setToken(t);
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (e) {
       // lance une erreur
@@ -112,6 +110,31 @@ export default function Order({ navigation }) {
       console.log("USER ", user);
       console.log("TOKEN passer commande", token);
     }
+  };
+
+  const postAdress = async () => {
+    await fetch("http://10.0.2.2:8000/addresses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.toString()}`,
+      },
+
+      body: JSON.stringify({
+        street: "rue de la place 1",
+        postal_code: 4000,
+        city: "liege",
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // enter you logic when the fetch is successful
+        console.log("DATA", data);
+      })
+      .catch((error) => {
+        // enter your logic for when there is an error (ex. error toast)
+        console.log("ERROR POst adrress", error);
+      });
   };
 
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -140,20 +163,28 @@ export default function Order({ navigation }) {
           <SafeAreaView>
             <Text
               style={{
-                fontSize: 35,
+                fontSize: 30,
                 fontWeight: "bold",
                 position: "absolute",
-                top: 120,
+                top: 100,
                 marginStart: 35,
               }}
             >
-              Pas d'adresse encodé
+              Veuillez encoder au moins une adresses afin de passer commande
             </Text>
             <View style={styles.modalAddAdress}>
+              <Text style={styles.titleInputText}>rue:</Text>
               <TextInput style={styles.inputText} placeholder="Adresse 1" />
+              <Text style={styles.titleInputText}>code postal:</Text>
               <TextInput style={styles.inputText} placeholder="Adresse 2" />
+              <Text style={styles.titleInputText}>ville:</Text>
               <TextInput style={styles.inputText} placeholder="Adresse 3" />
-              <TouchableOpacity style={styles.modalSaveNewAdress}>
+            </View>
+            <View style={styles.containerButton}>
+              <TouchableOpacity
+                style={styles.modalSaveNewAdress}
+                onPress={() => postAdress()}
+              >
                 <Text>Enregistrer</Text>
               </TouchableOpacity>
             </View>
@@ -351,7 +382,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     backgroundColor: "pink",
     width: "80%",
-    top: 180,
+    top: "60%",
   },
   inputText: {
     borderColor: "#ccc",
@@ -375,7 +406,27 @@ const styles = StyleSheet.create({
     paddingStart: 10,
   },
   modalSaveNewAdress: {
+    position: "absolute",
+    display: "flex",
     backgroundColor: "gray",
     justifyContent: "center",
+    alignItems: "center",
+    height: "20%",
+    width: 130,
+    borderRadius: 30,
+  },
+  titleInputText: {
+    marginStart: 10,
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  containerButton: {
+    position: "absolute",
+    top: "170%",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
   },
 });
