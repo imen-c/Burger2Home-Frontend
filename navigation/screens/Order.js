@@ -51,15 +51,6 @@ export default function Order({ navigation }) {
       // Do something manually
       // ...
 
-      fetch("http://10.0.2.2:8000/addresses", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token.toString()}` },
-      })
-        .then((response) => response.json())
-        .then((json) => setAddresses(json))
-        .catch((error) => console.error(error))
-        .finally(() => setLoading(false));
-
       console.log("Addresses recçue", addresses);
       console.log("passer commande");
       console.log("USER ", user);
@@ -143,11 +134,6 @@ export default function Order({ navigation }) {
   const [isLoading, setLoading] = React.useState(true);
   const [addresses, setAddresses] = React.useState([]);
   const [cart, setCart] = React.useState();
-
-  React.useEffect(() => {
-    console.log("changement sur User Load des addresses");
-    //console.log("token", JSON.parse(token));
-  }, [user]);
 
   function todo() {
     console.log(orderList), "liste reçu par order";
