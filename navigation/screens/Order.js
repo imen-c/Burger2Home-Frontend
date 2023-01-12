@@ -11,7 +11,7 @@ import {
   Button,
   TextInput,
 } from "react-native";
-import { AntDesign, Octicons, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Octicons, Ionicons, Entypo } from "@expo/vector-icons";
 import { orderList, emptyCart } from "./BurgerDetail";
 import { LoginScreenNavigator } from "../CustomNavigation";
 
@@ -112,8 +112,8 @@ export default function Order({ navigation }) {
       },
 
       body: JSON.stringify({
-        street: "rue de la place 1",
-        postal_code: 4000,
+        street: "rue du palace  1",
+        postal_code: 8000,
         city: "liege",
       }),
     })
@@ -134,6 +134,7 @@ export default function Order({ navigation }) {
   const [isLoading, setLoading] = React.useState(true);
   const [addresses, setAddresses] = React.useState([]);
   const [cart, setCart] = React.useState();
+  const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
   function todo() {
     console.log(orderList), "liste reçu par order";
@@ -181,16 +182,83 @@ export default function Order({ navigation }) {
   };
   const AdressReceived = () => {
     return (
-      <View>
-        <Text style={styles.modalTitle}>Options de livraison</Text>
-        <Text style={styles.modalSubTitle}>Adresse RECEIVED</Text>
+      <SafeAreaView>
+        <View>
+          <Text style={styles.modalTitle}>Options de livraison</Text>
+          <Text style={styles.modalSubTitle}>Adresse RECEIVED</Text>
 
-        {/*       <View style={styles.modalAddAdress}>
-        <TextInput style={styles.inputText} placeholder="Adresse 1" />
-        <TextInput style={styles.inputText} placeholder="Adresse 2" />
-        <TextInput style={styles.inputText} placeholder="Adresse 3" />
-      </View> */}
-      </View>
+          <View style={styles.flatListAdressContainer}>
+            <FlatList
+              data={addresses}
+              extraData={addresses}
+              keyExtractor={(adresse) => adresse.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity>
+                  <View style={styles.rectangle}>
+                    <View style={{ width: "80%" }}>
+                      <Text
+                        style={{
+                          backgroundColor: "red",
+                          marginTop: 10,
+                          marginBottom: 10,
+                          marginStart: 20,
+                          marginEnd: 20,
+                        }}
+                      >
+                        {item.street}
+                      </Text>
+
+                      <Text style={{ marginStart: 20, marginBottom: 10 }}>
+                        {item.postal_code}
+                        {"   "}
+                        {item.city}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        width: "20%",
+                        marginEnd: 0,
+                      }}
+                    >
+                      <Entypo
+                        style={{
+                          paddingTop: 10,
+                          paddingEnd: 5,
+                        }}
+                        name="edit"
+                        size={22}
+                        color="black"
+                      />
+                      <AntDesign
+                        style={{
+                          paddingTop: 8,
+                          paddingEnd: 5,
+                        }}
+                        name="delete"
+                        size={22}
+                        color="black"
+                      />
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+          <View style={styles.viewButtonStripe}>
+            <TouchableOpacity style={styles.buttonStripe}>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontStyle: "italic",
+                  fontSize: 15,
+                }}
+              >
+                Payer avec Stripe
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
     );
   };
 
@@ -219,8 +287,8 @@ export default function Order({ navigation }) {
 
       <FlatList
         style={styles.listOrder}
-        data={orderList}
-        extraData={cart}
+        data={cart}
+        extraData={orderList}
         keyExtractor={(burger) => burger.name}
         renderItem={({ item }) => <Text>{item.name}</Text>}
       />
@@ -310,15 +378,6 @@ const styles = StyleSheet.create({
   modal: {
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-  },
-  modalTitle: {
-    fontWeight: "bold",
-    fontSize: 25,
-    left: 20,
-    top: "50%",
-  },
-  modalSubTitle: {
-    top: "40%",
   },
   modalClose: {
     position: "absolute",
@@ -414,5 +473,42 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
+  },
+  modalTitle: {
+    fontWeight: "bold",
+    fontSize: 25,
+    left: 20,
+    marginTop: 40,
+  },
+  modalSubTitle: {
+    marginTop: 20,
+  },
+  flatListAdressContainer: {
+    marginTop: 40,
+    backgroundColor: "pink",
+    marginLeft: 30,
+    marginRight: 30,
+  },
+  rectangle: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderRadius: 25,
+    backgroundColor: "salmon",
+    marginTop: 20,
+    marginStart: 10,
+    marginEnd: 20,
+  },
+  viewButtonStripe: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "green",
+    height: 40,
+    marginTop: 15,
+    marginLeft: 30,
+    marginRight: 30,
+  },
+  buttonStripe: {
+    display: "flex",
+    justifyContent: "center",
   },
 });
