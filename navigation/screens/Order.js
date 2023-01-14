@@ -15,6 +15,12 @@ import { AntDesign, Octicons, Ionicons, Entypo } from "@expo/vector-icons";
 import { orderList, emptyCart } from "./BurgerDetail";
 import { LoginScreenNavigator } from "../CustomNavigation";
 
+const objectAdress = {
+  street: "",
+  code_postal: 0,
+  city: "",
+};
+
 export default function Order({ navigation }) {
   React.useEffect(() => {
     console.log("changement sur User Load des addresses");
@@ -32,6 +38,9 @@ export default function Order({ navigation }) {
       //let token = getToken();
       //setToken(token);
     }
+    /*     setTimeout(() => {
+      this.setState({ color: 'wheat' });
+    }, 2000); */
   }, []);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", (e) => {
@@ -104,6 +113,10 @@ export default function Order({ navigation }) {
   };
 
   const postAdress = async () => {
+    objectAdress.street = street;
+    objectAdress.code_postal = codePostal.toInt;
+    objectAdress.city = city;
+
     await fetch("http://10.0.2.2:8000/addresses", {
       method: "POST",
       headers: {
@@ -112,9 +125,9 @@ export default function Order({ navigation }) {
       },
 
       body: JSON.stringify({
-        street: "rue du palace  1",
-        postal_code: 8000,
-        city: "liege",
+        street: "rue de la joie",
+        postal_code: 4000,
+        city: "Waouw",
       }),
     })
       .then((res) => res.json())
@@ -134,6 +147,9 @@ export default function Order({ navigation }) {
   const [isLoading, setLoading] = React.useState(true);
   const [addresses, setAddresses] = React.useState([]);
   const [cart, setCart] = React.useState();
+  const [street, setStreet] = React.useState("");
+  const [codePostal, setCodePostal] = React.useState("");
+  const [city, setCity] = React.useState("");
   const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
   function todo() {
@@ -143,6 +159,15 @@ export default function Order({ navigation }) {
   }
 
   const ChooseAdress = () => {
+    const handleStreet = (text) => {
+      setStreet(text);
+    };
+    const handleCP = (text) => {
+      setCodePostal(text);
+    };
+    const handleCity = (text) => {
+      setCity(text);
+    };
     return (
       <View>
         {addresses.length > 0 && <AdressReceived />}
@@ -150,7 +175,7 @@ export default function Order({ navigation }) {
           <SafeAreaView>
             <Text
               style={{
-                fontSize: 30,
+                fontSize: 20,
                 fontWeight: "bold",
                 position: "absolute",
                 top: 100,
@@ -161,11 +186,23 @@ export default function Order({ navigation }) {
             </Text>
             <View style={styles.modalAddAdress}>
               <Text style={styles.titleInputText}>rue:</Text>
-              <TextInput style={styles.inputText} placeholder="Adresse 1" />
+              <TextInput
+                style={styles.inputText}
+                placeholder="Adresse 1"
+                onBlur={handleStreet}
+              />
               <Text style={styles.titleInputText}>code postal:</Text>
-              <TextInput style={styles.inputText} placeholder="Adresse 2" />
+              <TextInput
+                style={styles.inputText}
+                placeholder="Adresse 2"
+                onBlur={handleCP}
+              />
               <Text style={styles.titleInputText}>ville:</Text>
-              <TextInput style={styles.inputText} placeholder="Adresse 3" />
+              <TextInput
+                style={styles.inputText}
+                placeholder="Adresse 3"
+                onBlur={handleCity}
+              />
             </View>
             <View style={styles.containerButton}>
               <TouchableOpacity
@@ -193,9 +230,9 @@ export default function Order({ navigation }) {
               extraData={addresses}
               keyExtractor={(adresse) => adresse.id}
               renderItem={({ item }) => (
-                <TouchableOpacity>
-                  <View style={styles.rectangle}>
-                    <View style={{ width: "80%" }}>
+                <View style={styles.rectangle}>
+                  <TouchableOpacity>
+                    <View style={styles.subRectangle}>
                       <Text
                         style={{
                           backgroundColor: "red",
@@ -214,33 +251,38 @@ export default function Order({ navigation }) {
                         {item.city}
                       </Text>
                     </View>
-                    <View
-                      style={{
-                        width: "20%",
-                        marginEnd: 0,
-                      }}
-                    >
+                  </TouchableOpacity>
+
+                  <View
+                    style={{
+                      width: "20%",
+                      marginEnd: 0,
+                    }}
+                  >
+                    <TouchableOpacity onPress={() => ModifyAdress()}>
                       <Entypo
                         style={{
                           paddingTop: 10,
                           paddingEnd: 5,
                         }}
                         name="edit"
-                        size={22}
+                        size={21}
                         color="black"
                       />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => DeleteAdress(item.id)}>
                       <AntDesign
                         style={{
                           paddingTop: 8,
                           paddingEnd: 5,
                         }}
                         name="delete"
-                        size={22}
+                        size={21}
                         color="black"
                       />
-                    </View>
+                    </TouchableOpacity>
                   </View>
-                </TouchableOpacity>
+                </View>
               )}
             />
           </View>
@@ -270,6 +312,33 @@ export default function Order({ navigation }) {
     console.log("TOKEN passer commande", token);
     setModalVisible(true);
   };
+  const ModifyAdress = () => {};
+  const DeleteAdress = (id) => {
+    fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.toString()}`,
+      },
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        // check for error response
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (data && data.message) || response.status;
+          return Promise.reject(error);
+        }
+
+        setStatus("Delete successful");
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+        console.error("There was an error!", error);
+      });
+  };
+
   return (
     <SafeAreaView style={styles.safearea}>
       <View style={styles.header}>
@@ -424,7 +493,7 @@ const styles = StyleSheet.create({
   },
   modalAddAdress: {
     marginStart: 35,
-    marginTop: 50,
+    marginTop: 30,
     backgroundColor: "pink",
     width: "80%",
     top: "60%",
@@ -467,7 +536,7 @@ const styles = StyleSheet.create({
   },
   containerButton: {
     position: "absolute",
-    top: "170%",
+    marginTop: 400,
     width: "100%",
     height: "100%",
     justifyContent: "center",
@@ -510,5 +579,12 @@ const styles = StyleSheet.create({
   buttonStripe: {
     display: "flex",
     justifyContent: "center",
+  },
+  subRectangle: {
+    borderRadius: 25,
+    backgroundColor: "green",
+    width: "90%",
+    marginStart: 10,
+    marginEnd: 20,
   },
 });

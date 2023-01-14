@@ -15,6 +15,11 @@ import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 //web 187568508686-jdjjciesnsfk4cvamgc1rc5qefc3p16m.apps.googleusercontent.com
 //ios 187568508686-d1ss60c460327h8uvp6nug8166plreqc.apps.googleusercontent.com
 //android 187568508686-39hd0ss5p80vmh76f1k4bnvupdve0cli.apps.googleusercontent.com
+const newUser = {
+  email: "hell@lol.com",
+  first_name: " bebe",
+  last_name: "bebe ",
+};
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -43,35 +48,33 @@ export default function MyAccount({ navigation }) {
     persistAuth();
   }, [useInfo]); */
 
-  fetch("http://10.0.2.2:8000/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: "mimi@mimi.com",
-      first_name: "mimi",
-      last_name: "mimi",
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      // enter you logic when the fetch is successful
-      console.log("DATA", data);
-      console.log("retrieve data ", data.currentUser.email);
-      let userAsync = {
-        nom: data.currentUser.last_name,
-        prenom: data.currentUser.first_name,
-        token: data.token,
-      };
-      console.log("TOKEN de user async", data.token);
-      storeToken(data.token);
-      storeDataUser(userAsync);
+  const postUser = async () => {
+    await fetch("http://10.0.2.2:8000/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
     })
-    .catch((error) => {
-      // enter your logic for when there is an error (ex. error toast)
-      console.log("ERROR", error);
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        // enter you logic when the fetch is successful
+        console.log("DATA", data.jsonValue);
+        console.log("retrieve data ", data);
+        let userAsync = {
+          nom: data.currentUser.last_name,
+          prenom: data.currentUser.first_name,
+          token: data.token,
+        };
+        console.log("TOKEN de user async", data.token);
+        storeToken(data.token);
+        storeDataUser(userAsync);
+      })
+      .catch((error) => {
+        // enter your logic for when there is an error (ex. error toast)
+        console.log("ERROR POST", error);
+      });
+  };
 
   async function fetchUserInfo() {
     let response = await fetch("https://www.googleapis.com/userinfo/v2/me", {
@@ -146,6 +149,13 @@ export default function MyAccount({ navigation }) {
             title="getData "
             onPress={() => {
               getData();
+            }}
+          />
+          <Button
+            style={{ width: 300, height: 40 }}
+            title=" new"
+            onPress={() => {
+              postUser();
             }}
           />
           <Text
