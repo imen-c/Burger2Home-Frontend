@@ -16,9 +16,9 @@ import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 //ios 187568508686-d1ss60c460327h8uvp6nug8166plreqc.apps.googleusercontent.com
 //android 187568508686-39hd0ss5p80vmh76f1k4bnvupdve0cli.apps.googleusercontent.com
 const newUser = {
-  email: "dada@lol.com",
-  first_name: " waaaa",
-  last_name: "waaa",
+  email: "momo@lol.com",
+  first_name: " modify",
+  last_name: "modify",
 };
 
 WebBrowser.maybeCompleteAuthSession();

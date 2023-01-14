@@ -119,12 +119,6 @@ export default function Order({ navigation }) {
   };
 
   const postAdress = async () => {
-    console.log(
-      "Adress encoded",
-      adressEncoded.street,
-      adressEncoded.code_postal,
-      adressEncoded.city
-    );
     let postStreet = street;
     let postCp = parseInt(codePostal);
     let postCity = city;
@@ -172,6 +166,7 @@ export default function Order({ navigation }) {
   const [codePostal, setCodePostal] = React.useState("");
   const [city, setCity] = React.useState("");
   const [tryModify, setTryMofify] = React.useState(false);
+  const [idToModify, setIdToModify] = React.useState(0);
   const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
   function todo() {
@@ -179,23 +174,24 @@ export default function Order({ navigation }) {
     emptyCart();
     console.log(orderList, "liste apres trash");
   }
+  const handleStreet = (text) => {
+    console.log("street", text);
+    setStreet(text);
+  };
+  const handleCP = (text) => {
+    console.log("CP", text);
+    setCodePostal(text);
+  };
+  const handleCity = (text) => {
+    console.log("city", text);
+    setCity(text);
+  };
 
   const ChooseAdress = () => {
-    const handleStreet = (text) => {
-      console.log("street", text);
-      setStreet(text);
-    };
-    const handleCP = (text) => {
-      console.log("CP", text);
-      setCodePostal(text);
-    };
-    const handleCity = (text) => {
-      console.log("city", text);
-      setCity(text);
-    };
     return (
       <View>
-        {addresses.length > 0 && <AdressReceived />}
+        {addresses.length > 0 && !tryModify && <AdressReceived />}
+        {tryModify && <ModifyAdressView />}
         {(addresses === undefined || addresses.length == 0) && (
           <SafeAreaView>
             <Text
@@ -245,6 +241,54 @@ export default function Order({ navigation }) {
       </View>
     );
   };
+  const ModifyAdressView = () => {
+    return (
+      <SafeAreaView>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            position: "absolute",
+            top: 100,
+            marginStart: 35,
+          }}
+        >
+          Vous souhaitez modifier votre adresse
+        </Text>
+        <View style={styles.modalAddAdress}>
+          <Text style={styles.titleInputText}>rue:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="Adresse 1"
+            onEndEditing={(e) => handleStreet(e.nativeEvent.text)}
+            defaultValue={street}
+          />
+          <Text style={styles.titleInputText}>code postal:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="Adresse 2"
+            onEndEditing={(e) => handleCP(e.nativeEvent.text)}
+            defaultValue={codePostal}
+          />
+          <Text style={styles.titleInputText}>ville:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="Adresse 3"
+            onEndEditing={(e) => handleCity(e.nativeEvent.text)}
+            defaultValue={city}
+          />
+        </View>
+        <View style={styles.containerButton}>
+          <TouchableOpacity
+            style={styles.modalSaveNewAdress}
+            onPress={() => ModifyAdressCall()}
+          >
+            <Text>Enregistrer</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  };
   const AdressReceived = () => {
     return (
       <SafeAreaView>
@@ -287,7 +331,7 @@ export default function Order({ navigation }) {
                       marginEnd: 0,
                     }}
                   >
-                    <TouchableOpacity onPress={() => ModifyAdress()}>
+                    <TouchableOpacity onPress={() => ModifyAdress(item.id)}>
                       <Entypo
                         style={{
                           paddingTop: 10,
@@ -350,9 +394,47 @@ export default function Order({ navigation }) {
         onPress: () => console.log("Cancel Pressed"),
         style: "cancel",
       },
-      { text: "OK", onPress: () => console.log("OK Pressed") },
+      { text: "OK", onPress: () => setTryMofify(false) },
     ]);
-  const ModifyAdress = () => {};
+  const ModifyAdress = (id) => {
+    setTryMofify(true);
+    setIdToModify(id);
+  };
+  const ModifyAdressCall = () => {
+    let postStreet = street;
+    let postCp = parseInt(codePostal);
+    let postCity = city;
+    let id = idToModify;
+    console.log("Adress LET", postStreet, postCp, postCity);
+    fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.toString()}`,
+      },
+      body: JSON.stringify({
+        street: postStreet,
+        postal_code: postCp,
+        city: postCity,
+      }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        // check for error response
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (data && data.message) || response.status;
+          return Promise.reject(error);
+        }
+        getAddresses();
+        alertUpdateAdress();
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+        console.error("There was an error!", error);
+      });
+  };
   const DeleteAdress = (id) => {
     fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
       method: "DELETE",
@@ -377,6 +459,10 @@ export default function Order({ navigation }) {
         setErrorMessage(error);
         console.error("There was an error!", error);
       });
+  };
+  const closeModale = () => {
+    setTryMofify(false);
+    setModalVisible(false);
   };
 
   return (
@@ -410,7 +496,7 @@ export default function Order({ navigation }) {
       </TouchableOpacity>
       <Modal style={styles.modal} visible={modalVisible} animationType="slide">
         <SafeAreaView>
-          <TouchableOpacity onPress={() => setModalVisible(false)}>
+          <TouchableOpacity onPress={() => closeModale()}>
             <Ionicons
               style={styles.modalClose}
               name="close-circle-outline"
