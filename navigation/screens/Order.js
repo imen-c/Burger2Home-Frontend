@@ -125,6 +125,10 @@ export default function Order({ navigation }) {
       adressEncoded.code_postal,
       adressEncoded.city
     );
+    let postStreet = street;
+    let postCp = parseInt(codePostal);
+    let postCity = city;
+    console.log("Adress LET", postStreet, postCp, postCity);
 
     await fetch("http://10.0.2.2:8000/addresses", {
       method: "POST",
@@ -133,9 +137,16 @@ export default function Order({ navigation }) {
         Authorization: `Bearer ${token.toString()}`,
       },
 
-      body: JSON.stringify(adressEncoded),
+      body: JSON.stringify({
+        street: postStreet,
+        postal_code: postCp,
+        city: postCity,
+      }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        res.json;
+        console.log("STATUT", res.status);
+      })
       .then((data) => {
         // enter you logic when the fetch is successful
         console.log("DATA", data);
@@ -155,8 +166,12 @@ export default function Order({ navigation }) {
   const [addresses, setAddresses] = React.useState([]);
   const [cart, setCart] = React.useState();
   const [street, setStreet] = React.useState("");
+  /*   const [streetInput, setStreetInput] = React.useState("");
+  const [cPInput, setcPInput] = React.useState("");
+  const [cityInput, setCityInput] = React.useState(""); */
   const [codePostal, setCodePostal] = React.useState("");
   const [city, setCity] = React.useState("");
+  const [tryModify, setTryMofify] = React.useState(false);
   const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
   function todo() {
@@ -199,19 +214,22 @@ export default function Order({ navigation }) {
               <TextInput
                 style={styles.inputText}
                 placeholder="Adresse 1"
-                onChangeText={(text) => handleStreet(text)}
+                onEndEditing={(e) => handleStreet(e.nativeEvent.text)}
+                defaultValue={street}
               />
               <Text style={styles.titleInputText}>code postal:</Text>
               <TextInput
                 style={styles.inputText}
                 placeholder="Adresse 2"
-                onChangeText={handleCP}
+                onEndEditing={(e) => handleCP(e.nativeEvent.text)}
+                defaultValue={codePostal}
               />
               <Text style={styles.titleInputText}>ville:</Text>
               <TextInput
                 style={styles.inputText}
                 placeholder="Adresse 3"
-                onChangeText={handleCity}
+                onEndEditing={(e) => handleCity(e.nativeEvent.text)}
+                defaultValue={city}
               />
             </View>
             <View style={styles.containerButton}>
