@@ -10,12 +10,13 @@ import {
   Modal,
   Button,
   TextInput,
+  Alert,
 } from "react-native";
 import { AntDesign, Octicons, Ionicons, Entypo } from "@expo/vector-icons";
 import { orderList, emptyCart } from "./BurgerDetail";
 import { LoginScreenNavigator } from "../CustomNavigation";
 
-const objectAdress = {
+const adressEncoded = {
   street: "",
   code_postal: 0,
   city: "",
@@ -29,6 +30,11 @@ export default function Order({ navigation }) {
     let us = getDataUser();
     setUser(us);
   }, [user]);
+  React.useEffect(() => {
+    adressEncoded.city = city;
+    adressEncoded.code_postal = codePostal;
+    adressEncoded.street = street;
+  }, [street, codePostal, city]);
   React.useEffect(() => {
     console.log("1ere fois");
     //console.log("token", JSON.parse(token));
@@ -113,9 +119,12 @@ export default function Order({ navigation }) {
   };
 
   const postAdress = async () => {
-    objectAdress.street = street;
-    objectAdress.code_postal = codePostal.toInt;
-    objectAdress.city = city;
+    console.log(
+      "Adress encoded",
+      adressEncoded.street,
+      adressEncoded.code_postal,
+      adressEncoded.city
+    );
 
     await fetch("http://10.0.2.2:8000/addresses", {
       method: "POST",
@@ -124,16 +133,14 @@ export default function Order({ navigation }) {
         Authorization: `Bearer ${token.toString()}`,
       },
 
-      body: JSON.stringify({
-        street: "rue de la joie",
-        postal_code: 4000,
-        city: "Waouw",
-      }),
+      body: JSON.stringify(adressEncoded),
     })
       .then((res) => res.json())
       .then((data) => {
         // enter you logic when the fetch is successful
         console.log("DATA", data);
+        getAddresses();
+        alertUpdateAdress();
       })
       .catch((error) => {
         // enter your logic for when there is an error (ex. error toast)
@@ -160,12 +167,15 @@ export default function Order({ navigation }) {
 
   const ChooseAdress = () => {
     const handleStreet = (text) => {
+      console.log("street", text);
       setStreet(text);
     };
     const handleCP = (text) => {
+      console.log("CP", text);
       setCodePostal(text);
     };
     const handleCity = (text) => {
+      console.log("city", text);
       setCity(text);
     };
     return (
@@ -189,19 +199,19 @@ export default function Order({ navigation }) {
               <TextInput
                 style={styles.inputText}
                 placeholder="Adresse 1"
-                onBlur={handleStreet}
+                onChangeText={(text) => handleStreet(text)}
               />
               <Text style={styles.titleInputText}>code postal:</Text>
               <TextInput
                 style={styles.inputText}
                 placeholder="Adresse 2"
-                onBlur={handleCP}
+                onChangeText={handleCP}
               />
               <Text style={styles.titleInputText}>ville:</Text>
               <TextInput
                 style={styles.inputText}
                 placeholder="Adresse 3"
-                onBlur={handleCity}
+                onChangeText={handleCity}
               />
             </View>
             <View style={styles.containerButton}>
@@ -287,7 +297,10 @@ export default function Order({ navigation }) {
             />
           </View>
           <View style={styles.viewButtonStripe}>
-            <TouchableOpacity style={styles.buttonStripe}>
+            <TouchableOpacity
+              style={styles.buttonStripe}
+              onPress={() => createThreeButtonAlert()}
+            >
               <Text
                 style={{
                   fontWeight: "bold",
@@ -312,6 +325,15 @@ export default function Order({ navigation }) {
     console.log("TOKEN passer commande", token);
     setModalVisible(true);
   };
+  const alertUpdateAdress = () =>
+    Alert.alert("Alert Title", "My Alert Msg", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => console.log("OK Pressed") },
+    ]);
   const ModifyAdress = () => {};
   const DeleteAdress = (id) => {
     fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
@@ -330,8 +352,8 @@ export default function Order({ navigation }) {
           const error = (data && data.message) || response.status;
           return Promise.reject(error);
         }
-
-        setStatus("Delete successful");
+        getAddresses();
+        alertUpdateAdress();
       })
       .catch((error) => {
         setErrorMessage(error);
@@ -500,7 +522,7 @@ const styles = StyleSheet.create({
   },
   inputText: {
     borderColor: "#ccc",
-    backgroundColor: "blue",
+    backgroundColor: "yellow",
     marginBottom: 30,
     borderBottomWidth: 1,
     borderBottomColor: "gray",
