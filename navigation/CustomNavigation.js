@@ -5,6 +5,7 @@ import MenuList from "./screens/MenuList";
 import BurgerDetail from "./screens/BurgerDetail";
 import Order from "./screens/Order";
 import MyAccount from "./screens/MyAccount";
+import Payement from "./Payement";
 
 const Stack = createStackNavigator();
 

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  Button,
 } from "react-native";
 
 const listings = [
@@ -59,10 +60,15 @@ export default function MenuList({ navigation }) {
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, []);
+
   return (
     <SafeAreaView styles={styles.container}>
       <Text style={styles.header}>Burgers</Text>
       <View style={styles.filter}>
+        <Button
+          title="Test"
+          onPress={() => console.log(data.burgers[0].name)}
+        />
         <FlatList
           style={styles.listFilters}
           data={data.categories}

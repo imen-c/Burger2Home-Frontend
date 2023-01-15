@@ -8,7 +8,6 @@ import {
   SafeAreaView,
   FlatList,
   Modal,
-  Button,
   TextInput,
   Alert,
 } from "react-native";
@@ -20,7 +19,13 @@ import {
   Fontisto,
 } from "@expo/vector-icons";
 import { orderList, emptyCart } from "./BurgerDetail";
-import { LoginScreenNavigator } from "../CustomNavigation";
+import {
+  CardField,
+  useConfirmPayment,
+  useStripe,
+  StripeProvider,
+} from "@stripe/stripe-react-native";
+import Payement from "../Payement";
 
 const adressEncoded = {
   street: "",
@@ -180,6 +185,7 @@ export default function Order({ navigation }) {
   const [city, setCity] = React.useState("");
   const [tryModify, setTryMofify] = React.useState(false);
   const [tryAddOne, setTryAddOne] = React.useState(false);
+  const [tryToPay, setTryToPay] = React.useState(false);
   const [idToModify, setIdToModify] = React.useState(0);
   const [adresseSelected, setAdressSelected] = React.useState();
   //const [disabled, setDisabled] = React.useState(false);
@@ -391,7 +397,7 @@ export default function Order({ navigation }) {
           <View style={styles.viewButtonStripe}>
             <TouchableOpacity
               style={styles.buttonStripe}
-              onPress={() => createThreeButtonAlert()}
+              onPress={() => proceedPayement()}
             >
               <Text
                 style={{
@@ -407,6 +413,12 @@ export default function Order({ navigation }) {
         </View>
       </SafeAreaView>
     );
+  };
+  const proceedPayement = () => {
+    setTryToPay(true);
+  };
+  const payementView = () => {
+    return <SafeAreaView></SafeAreaView>;
   };
 
   const VerifyLogin = () => {
