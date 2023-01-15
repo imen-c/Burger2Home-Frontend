@@ -12,7 +12,13 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import { AntDesign, Octicons, Ionicons, Entypo } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Octicons,
+  Ionicons,
+  Entypo,
+  Fontisto,
+} from "@expo/vector-icons";
 import { orderList, emptyCart } from "./BurgerDetail";
 import { LoginScreenNavigator } from "../CustomNavigation";
 
@@ -30,6 +36,13 @@ export default function Order({ navigation }) {
     let us = getDataUser();
     setUser(us);
   }, [user]);
+  /*   React.useEffect(() => {
+    if (addresses.length == 3) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [addresses]); */
   React.useEffect(() => {
     adressEncoded.city = city;
     adressEncoded.code_postal = codePostal;
@@ -166,7 +179,10 @@ export default function Order({ navigation }) {
   const [codePostal, setCodePostal] = React.useState("");
   const [city, setCity] = React.useState("");
   const [tryModify, setTryMofify] = React.useState(false);
+  const [tryAddOne, setTryAddOne] = React.useState(false);
   const [idToModify, setIdToModify] = React.useState(0);
+  const [adresseSelected, setAdressSelected] = React.useState();
+  //const [disabled, setDisabled] = React.useState(false);
   const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
   function todo() {
@@ -190,9 +206,9 @@ export default function Order({ navigation }) {
   const ChooseAdress = () => {
     return (
       <View>
-        {addresses.length > 0 && !tryModify && <AdressReceived />}
+        {addresses.length > 0 && !tryModify && !tryAddOne && <AdressReceived />}
         {tryModify && <ModifyAdressView />}
-        {(addresses === undefined || addresses.length == 0) && (
+        {(addresses === undefined || addresses.length == 0 || tryAddOne) && (
           <SafeAreaView>
             <Text
               style={{
@@ -295,6 +311,11 @@ export default function Order({ navigation }) {
         <View>
           <Text style={styles.modalTitle}>Options de livraison</Text>
           <Text style={styles.modalSubTitle}>Adresse RECEIVED</Text>
+          <View style={{ marginTop: 10, marginLeft: "80%" }}>
+            <TouchableOpacity onPress={() => AddOneAdress()}>
+              <Fontisto name="plus-a" size={20} color="black" />
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.flatListAdressContainer}>
             <FlatList
@@ -303,7 +324,16 @@ export default function Order({ navigation }) {
               keyExtractor={(adresse) => adresse.id}
               renderItem={({ item }) => (
                 <View style={styles.rectangle}>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    style={
+                      item === adresseSelected
+                        ? { backgroundColor: "yellow" }
+                        : {}
+                    }
+                    onPress={() => {
+                      setAdressSelected(item);
+                    }}
+                  >
                     <View style={styles.subRectangle}>
                       <Text
                         style={{
@@ -394,8 +424,31 @@ export default function Order({ navigation }) {
         onPress: () => console.log("Cancel Pressed"),
         style: "cancel",
       },
-      { text: "OK", onPress: () => setTryMofify(false) },
+      { text: "OK", onPress: () => endAddAdress() },
     ]);
+  const endAddAdress = () => {
+    setTryMofify(false);
+    setTryAddOne(false);
+  };
+  const AddOneAdress = () => {
+    if (addresses.length === 3) {
+      console.log("LENGTH 3");
+      Alert.alert(
+        "Ajout",
+        "Vous avez enregistré un maximum de 3 adresses, veuillez modifier ou supprimer l'une d'elles",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => console.log("ok Pressed") },
+        ]
+      );
+    } else {
+      setTryAddOne(true);
+    }
+  };
   const ModifyAdress = (id) => {
     setTryMofify(true);
     setIdToModify(id);
@@ -462,6 +515,7 @@ export default function Order({ navigation }) {
   };
   const closeModale = () => {
     setTryMofify(false);
+    setTryAddOne(false);
     setModalVisible(false);
   };
 
@@ -679,7 +733,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   flatListAdressContainer: {
-    marginTop: 40,
+    marginTop: 25,
     backgroundColor: "pink",
     marginLeft: 30,
     marginRight: 30,
@@ -693,12 +747,13 @@ const styles = StyleSheet.create({
     marginStart: 10,
     marginEnd: 20,
   },
+
   viewButtonStripe: {
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "green",
     height: 40,
-    marginTop: 15,
+    marginTop: 100,
     marginLeft: 30,
     marginRight: 30,
   },
