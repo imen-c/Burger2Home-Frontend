@@ -17,13 +17,20 @@ const BurgerDetail = ({ route }) => {
   const [orderItems, setOrderItems] = React.useState(orderList);
 
   function edit(item) {
-    var burger = {
-      id: item.id,
-      name: item.name,
-      qty: 1,
-      price: item.basePrice,
-    };
-    orderList.push(burger);
+    console.log("itemName", item.name);
+    if (orderItems.find((item) => item.name === data.name)) {
+      console.log("LE FIND OK");
+      // console.log(item);
+    } else {
+      var burger = {
+        id: item.id,
+        name: item.name,
+        qty: 1,
+        price: item.basePrice,
+      };
+      orderList.push(burger);
+    }
+
     setOrderItems(orderList);
     storeCart(orderItems);
 
