@@ -558,7 +558,7 @@ export default function Order({ navigation }) {
             <View
               style={{
                 marginStart: 20,
-                width: "30%",
+                width: "25%",
                 height: "100%",
                 backgroundColor: "blue",
               }}

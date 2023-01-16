@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#A6A9BC",
-    paddingTop: Platform.OS === "android" ? 25 : 0,
+    marginTop: Platform.OS === "android" ? 30 : 0,
     alignItems: "center",
     justifyContent: "center",
   },
