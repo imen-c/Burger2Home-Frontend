@@ -10,6 +10,7 @@ import {
   Modal,
   TextInput,
   Alert,
+  Image,
 } from "react-native";
 import {
   AntDesign,
@@ -90,6 +91,7 @@ export default function Order({ navigation }) {
       console.log("TOKEN passer commande", token);
     });
     const getCart = async () => {
+      console.log("JE PASSE DANS LE GET CART");
       try {
         const jsonValue = await AsyncStorage.getItem("@cart");
 
@@ -548,10 +550,61 @@ export default function Order({ navigation }) {
 
       <FlatList
         style={styles.listOrder}
-        data={cart}
-        extraData={orderList}
+        data={orderList}
+        extraData={cart}
         keyExtractor={(burger) => burger.name}
-        renderItem={({ item }) => <Text>{item.name}</Text>}
+        renderItem={({ item }) => (
+          <View style={styles.orderCell}>
+            <View
+              style={{
+                marginStart: 20,
+                width: "30%",
+                height: "100%",
+                backgroundColor: "blue",
+              }}
+            >
+              <Image
+                style={{
+                  marginStart: 10,
+                  borderRadius: 20,
+                  height: 60,
+                  width: 60,
+                  marginBottom: 10,
+                  marginTop: 10,
+                }}
+                source={require("../../assets/burger.png")}
+              />
+            </View>
+            <View
+              style={{
+                backgroundColor: "yellow",
+                width: "60%",
+                height: "100%",
+                marginEnd: 5,
+              }}
+            >
+              <Text
+                style={{
+                  marginTop: 5,
+                  marginStart: 5,
+                }}
+              >
+                {item.name}
+              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{}}>X{item.qty}</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <TouchableOpacity>
+                    <Ionicons name="md-add" size={16} color="black" />
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <AntDesign name="minus" size={16} color="black" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
       />
 
       <TouchableOpacity
@@ -624,6 +677,13 @@ const styles = StyleSheet.create({
     marginTop: 85,
     width: "90%",
     left: 5,
+  },
+  orderCell: {
+    flexDirection: "row",
+    backgroundColor: "green",
+    marginTop: 5,
+    height: 80,
+    borderRadius: 20,
   },
   confirmButton: {
     position: "absolute",
