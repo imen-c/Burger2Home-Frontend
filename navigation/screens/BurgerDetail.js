@@ -18,6 +18,15 @@ const BurgerDetail = ({ route }) => {
 
   function edit(item) {
     console.log("itemName", item.name);
+    let i = 0;
+
+    for (i; i < orderItems.length; i++) {
+      if (orderItems[i].name == item.name) {
+        orderItems[i].qty = orderItems[i].qty + 1;
+        break;
+      } else {
+      }
+    }
 
     if (orderItems.find((ar) => ar.name === item.name)) {
       console.log("LE FIND OK");

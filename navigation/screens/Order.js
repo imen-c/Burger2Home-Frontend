@@ -56,6 +56,10 @@ export default function Order({ navigation }) {
   }, [street, codePostal, city]);
   React.useEffect(() => {
     console.log("1ere fois");
+    setClientSecret(
+      "pi_3MRNWCHp17SDAKMQ0opFA2vX_secret_h8A2JRjeZNl9MNWSWFm6OXU6x"
+    );
+    proceedPayement();
     //console.log("token", JSON.parse(token));
     if (user == null) {
       let us = getDataUser();
@@ -190,7 +194,9 @@ export default function Order({ navigation }) {
   const [tryToPay, setTryToPay] = React.useState(false);
   const [idToModify, setIdToModify] = React.useState(0);
   const [adresseSelected, setAdressSelected] = React.useState();
+  const [clientSecret, setClientSecret] = React.useState();
   //const [disabled, setDisabled] = React.useState(false);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
   function todo() {
@@ -399,7 +405,7 @@ export default function Order({ navigation }) {
           <View style={styles.viewButtonStripe}>
             <TouchableOpacity
               style={styles.buttonStripe}
-              onPress={() => proceedPayement()}
+              onPress={() => checkout()}
             >
               <Text
                 style={{
@@ -416,9 +422,43 @@ export default function Order({ navigation }) {
       </SafeAreaView>
     );
   };
-  const proceedPayement = () => {
-    setTryToPay(true);
+  const proceedPayement = async () => {
+    //let pi = "pi_3MRNWCHp17SDAKMQ0opFA2vX_secret_h8A2JRjeZNl9MNWSWFm6OXU6x";
+    // ici envoyer payement intent async le faire dans le useEffect 1:03:50
+    // setClientsecret repose .data.createPaymentIntent.clientSecret
+    //navigation.navigate("Payement");
+    setModalVisible(false);
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "Burger2Home, Inc.",
+      //customerId: customer,
+      //customerEphemeralKeySecret: ephemeralKey,
+      paymentIntentClientSecret: clientSecret,
+      // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+      //methods that complete payment after a delay, like SEPA Debit and Sofort.
+      //allowsDelayedPaymentMethods: true,
+      //defaultBillingDetails: {
+      //  name: 'Jane Doe',
+      //}
+    });
+    console.log("SUCCESS");
+    if (!error) {
+      setLoading(true);
+    }
   };
+  const openPaymentSheet = async () => {
+    const { error } = await presentPaymentSheet({ clientSecret });
+
+    if (error) {
+      Alert.alert(`Error code: ${error.code}`, error.message);
+    } else {
+      Alert.alert("Success", "Your payment is confirmed!");
+    }
+  };
+  const checkout = () => {
+    openPaymentSheet();
+    // save the order!
+  };
+
   const payementView = () => {
     return <SafeAreaView></SafeAreaView>;
   };
@@ -526,6 +566,9 @@ export default function Order({ navigation }) {
         setErrorMessage(error);
         console.error("There was an error!", error);
       });
+  };
+  const fetKeyPaymentIntent = () => {
+    return " ";
   };
   const closeModale = () => {
     setTryMofify(false);

@@ -36,3 +36,17 @@ const LoginScreenNavigator = () => {
   );
 };
 export { LoginScreenNavigator };
+
+const PaymentScreenNavigator = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Order"
+        component={Order}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="Payement" component={Payement} />
+    </Stack.Navigator>
+  );
+};
+export { PaymentScreenNavigator };

@@ -10,8 +10,7 @@ import {
 } from "@expo/vector-icons";
 import {
   FirstScreenNavigator,
-  LoginScreenNavigator,
-  PayementScreenNavigator,
+  PaymentScreenNavigator,
 } from "./navigation/CustomNavigation";
 import {
   CardField,
@@ -87,7 +86,7 @@ export default function App() {
           />
           <Tab.Screen
             name={orderName}
-            component={Order}
+            component={PaymentScreenNavigator}
             options={{ headerShown: false }}
           />
           <Tab.Screen
