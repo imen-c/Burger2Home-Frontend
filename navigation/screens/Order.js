@@ -56,9 +56,10 @@ export default function Order({ navigation }) {
   }, [street, codePostal, city]);
   React.useEffect(() => {
     console.log("1ere fois");
-    setClientSecret(
+
+    /*     setClientSecret(
       "pi_3MRNWCHp17SDAKMQ0opFA2vX_secret_h8A2JRjeZNl9MNWSWFm6OXU6x"
-    );
+    ); */
     proceedPayement();
     //console.log("token", JSON.parse(token));
     if (user == null) {
@@ -67,6 +68,7 @@ export default function Order({ navigation }) {
       //let token = getToken();
       //setToken(token);
     }
+    fetchIntentPayement();
     /*     setTimeout(() => {
       this.setState({ color: 'wheat' });
     }, 2000); */
@@ -106,6 +108,7 @@ export default function Order({ navigation }) {
         console.log("ASYNC storage erreur getCart");
       }
     };
+    fetchIntentPayement();
 
     return unsubscribe;
   }, [navigation]);
@@ -422,6 +425,22 @@ export default function Order({ navigation }) {
       </SafeAreaView>
     );
   };
+  const fetchIntentPayement = async () => {
+    if (token) {
+      let tok = token.toString();
+      await fetch("http://10.0.2.2:8000/payment/stripe/intent", {
+        method: "GET",
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          setClientSecret(json);
+
+          console.log("get secretClient");
+        })
+        .catch((error) => console.error(error))
+        .finally(() => setLoading(false));
+    }
+  };
   const proceedPayement = async () => {
     //let pi = "pi_3MRNWCHp17SDAKMQ0opFA2vX_secret_h8A2JRjeZNl9MNWSWFm6OXU6x";
     // ici envoyer payement intent async le faire dans le useEffect 1:03:50
@@ -446,6 +465,7 @@ export default function Order({ navigation }) {
     }
   };
   const openPaymentSheet = async () => {
+    console.log("JE RENTRE DANS OPENPAYEMENTSHEET");
     const { error } = await presentPaymentSheet({ clientSecret });
 
     if (error) {
@@ -458,11 +478,6 @@ export default function Order({ navigation }) {
     openPaymentSheet();
     // save the order!
   };
-
-  const payementView = () => {
-    return <SafeAreaView></SafeAreaView>;
-  };
-
   const VerifyLogin = () => {
     getAddresses();
     console.log("Addresses recçue", addresses);

@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Image,
+  Button,
+  ImageBackground,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { userReceived } from "./MyAccount";
 
 export default function Home({ navigation }) {
   React.useEffect(() => {
@@ -36,8 +37,16 @@ export default function Home({ navigation }) {
 
   const [token, setToken] = React.useState();
   const [user, setUser] = React.useState();
+  const [test, setTest] = React.useState();
   const [firstname, setFirstName] = React.useState();
   const [name, setName] = React.useState();
+  const UserConnected = () => {
+    return (
+      <View style={styles.header}>
+        <Text>Helloooooooo</Text>
+      </View>
+    );
+  };
   const getDataUser = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem("@user");
@@ -57,21 +66,34 @@ export default function Home({ navigation }) {
       console.log("ASYNC storage erreur getDATA");
     }
   };
-  const userConnected = () => {
-    return (
-      <View style={styles.header}>
-        <Text>Hello</Text>
-      </View>
-    );
-  };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <View style={styles.header}>
-          <Text>Hello</Text>
-          <Text>{firstname}</Text>
-        </View>
+        {test && <UserConnected />}
+        {!test && (
+          <View>
+            <View style={styles.imageContainer}>
+              <Image source={require("../../assets/b2hTitle.png")} />
+            </View>
+
+            <ImageBackground
+              style={{
+                borderTopRightRadius: 30,
+                borderTopEndRadius: 30,
+                height: 600,
+              }}
+              source={require("../../assets/newSplash.png")}
+            >
+              <View style={styles.bonhContainer}>
+                <TouchableOpacity style={styles.connectButton}>
+                  <Text>BOUTON</Text>
+                  <View style={styles.fidelityCard}></View>
+                </TouchableOpacity>
+              </View>
+            </ImageBackground>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -81,9 +103,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     //backgroundColor: "#A6A9BC",
-    backgroundColor: "green",
+
     marginTop: Platform.OS === "android" ? 25 : 0,
     //marginTop: 25,
+  },
+  connectButton: {
+    height: 50,
+    marginTop: 100,
+  },
+  imageContainer: {
+    height: 120,
+    width: "80%",
+  },
+  bonhContainer: {
+    marginTop: 10,
+    width: "100%",
+    borderBottomRightRadius: 30,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+  },
+  fidelityCard: {
+    backgroundColor: "white",
+    alignContent: "center",
+    justifyContent: "center",
+    height: 150,
+    marginTop: 20,
+    marginStart: 25,
+    marginRight: 25,
+    margin: 25,
+    borderRadius: 20,
   },
 
   header: {

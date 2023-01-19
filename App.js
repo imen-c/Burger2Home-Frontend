@@ -86,7 +86,7 @@ export default function App() {
           />
           <Tab.Screen
             name={orderName}
-            component={PaymentScreenNavigator}
+            component={Order}
             options={{ headerShown: false }}
           />
           <Tab.Screen

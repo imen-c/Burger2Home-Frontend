@@ -20,16 +20,6 @@ import {
 const Payement = () => {
   const [name, setName] = React.useState("");
 
-  const subscribe = async () => {
-    try {
-      const payementIntent = await stripe.payementIntents.create({
-        amount: 30,
-        currency: "usd",
-      });
-    } catch (err) {
-      Alert.alert("Une erreur est survenue");
-    }
-  };
   return (
     <View>
       <Text>Payement</Text>
