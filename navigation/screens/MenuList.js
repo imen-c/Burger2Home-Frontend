@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Button,
 } from "react-native";
+import { COLORS } from "../Colors";
 
 const listings = [
   {
@@ -60,7 +61,7 @@ export default function MenuList({ navigation }) {
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, []);
-
+  // console.log("CATTTTT", data.burgers[0].categories);
   return (
     <SafeAreaView styles={styles.container}>
       <Text style={styles.header}>Burgers</Text>
@@ -93,9 +94,59 @@ export default function MenuList({ navigation }) {
                 style={styles.image}
                 source={require("../../assets/burger.png")}
               />
-              <View>
+              <View
+                style={{
+                  backgroundColor: "yellow",
+                  marginStart: 0,
+                  height: 96,
+
+                  position: "absolute",
+                  right: 20,
+                  left: 100,
+                  bottom: 4,
+                }}
+              >
                 <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.descriptionCell}>{item.description}</Text>
+                <View style={{ backgroundColor: "pink" }}>
+                  <View style={styles.fidelityP}>
+                    <Text style={styles.point}>{item.burgerPoint}</Text>
+                    <Image
+                      style={styles.coin}
+                      source={require("../../assets/bonhomme.png")}
+                    />
+                  </View>
+                </View>
+                {/* <Text style={styles.descriptionCell}>{item.description}</Text> */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: "100%",
+                    //backgroundColor: "pink",
+                    position: "absolute",
+                    bottom: 0,
+                    justifyContent: "flex-end",
+                    right: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "white",
+                      justifyContent: "flex-end",
+                      marginBottom: 15,
+                    }}
+                  >
+                    <Text style={{ color: "black" }}>{item.basePrice} €</Text>
+                  </View>
+                </View>
+                {/*     <View style={{ backgroundColor: "pink" }}>
+                  <View style={styles.fidelityP}>
+                    <Text style={styles.point}>{item.burgerPoint}</Text>
+                    <Image
+                      style={styles.coin}
+                      source={require("../../assets/bonhomme.png")}
+                    />
+                  </View>
+                </View> */}
               </View>
             </TouchableOpacity>
           )}
@@ -107,7 +158,6 @@ export default function MenuList({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#A6A9BC",
     marginTop: Platform.OS === "android" ? 25 : 0,
     alignItems: "center",
     justifyContent: "center",
@@ -121,23 +171,26 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   containerCell: {
-    backgroundColor: "#7fffd4",
+    width: "85%",
+    backgroundColor: COLORS.white,
     flexDirection: "row",
     marginBottom: 20,
-    width: "100%",
+    marginStart: 30,
+    borderRadius: 20,
+    paddingEnd: 0,
   },
   filter: {
     width: "100%",
-    backgroundColor: "#f0e68c",
+    backgroundColor: COLORS.white,
     height: 70,
   },
   listContainer: {
-    backgroundColor: "#daa520",
     width: "100%",
     height: "85%",
+    paddingBottom: 60,
   },
   listBurger: {
-    backgroundColor: `#ffd700`,
+    //backgroundColor: COLORS.grayOne,
     flex: 1,
     top: "2%",
     left: "2%",
@@ -146,15 +199,33 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 100,
-    height: 140,
+    height: 100,
     borderRadius: 10,
-    marginRight: 10,
   },
   title: {
-    paddingTop: 10,
-    width: 180,
-    fontSize: 18,
+    paddingTop: 5,
+    fontFamily: "Roboto",
+    fontSize: 16,
     fontWeight: "bold",
+    marginStart: 15,
+  },
+  fidelityP: {
+    flex: 1,
+    marginTop: 20,
+    marginStart: 10,
+    flexDirection: "row",
+    //backgroundColor: "red",
+    position: "absolute",
+    alignItems: "center",
+  },
+  point: {
+    fontWeight: "600",
+
+    justifyContent: "flex-end",
+  },
+  coin: {
+    width: 50,
+    height: 50,
   },
   descriptionCell: {
     paddingStart: 15,
@@ -162,14 +233,21 @@ const styles = StyleSheet.create({
     width: 250,
   },
   rectangle: {
-    height: 30,
-    width: 60,
-    backgroundColor: "salmon",
-    marginTop: 20,
-    marginStart: 10,
+    backgroundColor: COLORS.darkRed,
+    marginTop: 15,
+    marginStart: 15,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: COLORS.darkRed,
   },
   textFilters: {
     textAlign: "center",
     paddingTop: 8,
+    fontFamily: "Roboto",
+    fontWeight: "900",
+    color: COLORS.white,
   },
 });

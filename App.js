@@ -1,4 +1,5 @@
 import * as React from "react";
+import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
@@ -22,6 +23,7 @@ import Order from "./navigation/screens/Order";
 import Home from "./navigation/screens/Home";
 import News from "./navigation/screens/News";
 import MyAccount from "./navigation/screens/MyAccount";
+import { COLORS } from "./navigation/Colors";
 import MenuList from "./navigation/screens/MenuList";
 import Payement from "./navigation/Payement";
 
@@ -47,7 +49,8 @@ export default function App() {
 
               if (rn === homeName) {
                 iconName = focused ? "home" : "home-outline";
-                return <AntDesign name="home" size={24} color="darkRed" />;
+
+                return <AntDesign name="home" size={24} color="black" />;
               } else if (rn === orderName) {
                 iconName = focused ? "appstore-o" : "appstore-O";
                 return (
