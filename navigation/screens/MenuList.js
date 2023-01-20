@@ -65,10 +65,6 @@ export default function MenuList({ navigation }) {
     <SafeAreaView styles={styles.container}>
       <Text style={styles.header}>Burgers</Text>
       <View style={styles.filter}>
-        <Button
-          title="Test"
-          onPress={() => console.log(data.burgers[0].name)}
-        />
         <FlatList
           style={styles.listFilters}
           data={data.categories}
@@ -112,12 +108,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#A6A9BC",
-    marginTop: Platform.OS === "android" ? 30 : 0,
+    marginTop: Platform.OS === "android" ? 25 : 0,
     alignItems: "center",
     justifyContent: "center",
   },
   header: {
-    marginTop: 5,
+    marginTop: 15,
     marginLeft: 5,
     width: "100%",
     textAlign: "left",
