@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { orderListManage } from "./Order";
-import { AntDesign, Octicons } from "@expo/vector-icons";
+import { AntDesign, Octicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { COLORS } from "../Colors";
 
 export var orderList = [];
 export function emptyCart() {
@@ -11,7 +12,7 @@ export function emptyCart() {
   console.log("je passe dans le emptyCart");
   console.log(orderList, "apres empycart");
 }
-const BurgerDetail = ({ route }) => {
+const BurgerDetail = ({ navigation, route }) => {
   console.log(orderList, "liste detail");
 
   const [orderItems, setOrderItems] = React.useState(orderList);
@@ -74,24 +75,38 @@ const BurgerDetail = ({ route }) => {
           style={styles.image}
           source={require("../../assets/burger.png")}
         />
-        <Text style={styles.title}>{route.params.item.name}</Text>
       </View>
+      <TouchableOpacity
+        style={{ position: "absolute", top: 40, left: 30 }}
+        onPress={() => navigation.goBack()}
+      >
+        <MaterialIcons name="arrow-back" size={30} color="white" />
+      </TouchableOpacity>
       <View style={styles.textContainer}>
-        <Text style={styles.idescription}>{route.params.item.description}</Text>
-        <TouchableOpacity
-          style={{ width: "100%", height: 40 }}
-          onPress={() => unrase()}
-        >
-          <Text>
-            Allergens <Octicons name="info" size={18} color="black" />
+        <Text style={styles.title}>{route.params.item.name}</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={styles.idescription}>
+            {route.params.item.description}
           </Text>
-        </TouchableOpacity>
+        </View>
       </View>
+      <TouchableOpacity style={styles.allergButtons} onPress={() => unrase()}>
+        <Text>
+          Allergens <Octicons name="info" size={18} color="black" />
+        </Text>
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => edit(route.params.item)}
       >
-        <Text style={{ textAlign: "center" }}>
+        <Text
+          style={{
+            textAlign: "center",
+            color: "white",
+            fontSize: 16,
+            fontWeight: "800",
+          }}
+        >
           AddToCart: {route.params.item.basePrice} €
         </Text>
       </TouchableOpacity>
@@ -107,37 +122,50 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   imageContainer: {
-    position: "absolute",
-    top: 0,
+    marginTop: 25,
     width: "100%",
-    height: "40%",
+    height: "55%",
+    alignItems: "center",
   },
   textContainer: {
-    position: "absolute",
-    borderTopRightRadius: 30,
-    bottom: 70,
+    marginTop: 10,
+    width: "100%",
+    alignItems: "center",
   },
   image: {
     height: "100%",
     width: "100%",
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
   },
   title: {
     fontSize: 24,
-    fontWeight: "500",
-    tintColor: `#fffaf0`,
+    fontWeight: "600",
+    marginTop: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  idescription: {},
+  idescription: {
+    flex: 1,
+    flexWrap: "wrap",
+    marginTop: 5,
+    marginStart: 20,
+    marginEnd: 20,
+    textAlign: "justify",
+    lineHeight: 20,
+  },
   allergButtons: {
-    width: "100%",
-    height: 100,
+    marginTop: 30,
+    marginStart: 20,
   },
   addButton: {
-    position: "absolute",
     display: "flex",
     justifyContent: "center",
-    backgroundColor: `#dcdcdc`,
-    bottom: 25,
+    backgroundColor: COLORS.darkRed,
+    borderRadius: 20,
+    marginTop: 20,
+    marginStart: 20,
+    marginEnd: 20,
     height: 40,
-    width: "100%",
   },
 });

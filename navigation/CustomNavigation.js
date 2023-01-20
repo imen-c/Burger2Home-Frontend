@@ -17,7 +17,11 @@ const FirstScreenNavigator = () => {
         component={MenuList}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="BurgerDetail" component={BurgerDetail} />
+      <Stack.Screen
+        name="BurgerDetail"
+        component={BurgerDetail}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

@@ -96,7 +96,7 @@ export default function MenuList({ navigation }) {
               />
               <View
                 style={{
-                  backgroundColor: "yellow",
+                  //backgroundColor: "yellow",
                   marginStart: 0,
                   height: 96,
 
@@ -138,15 +138,6 @@ export default function MenuList({ navigation }) {
                     <Text style={{ color: "black" }}>{item.basePrice} €</Text>
                   </View>
                 </View>
-                {/*     <View style={{ backgroundColor: "pink" }}>
-                  <View style={styles.fidelityP}>
-                    <Text style={styles.point}>{item.burgerPoint}</Text>
-                    <Image
-                      style={styles.coin}
-                      source={require("../../assets/bonhomme.png")}
-                    />
-                  </View>
-                </View> */}
               </View>
             </TouchableOpacity>
           )}
@@ -175,8 +166,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     flexDirection: "row",
     marginBottom: 20,
-    marginStart: 30,
-    borderRadius: 20,
+    marginStart: 25,
+    borderRadius: 10,
     paddingEnd: 0,
   },
   filter: {
@@ -185,17 +176,14 @@ const styles = StyleSheet.create({
     height: 70,
   },
   listContainer: {
-    width: "100%",
     height: "85%",
     paddingBottom: 60,
+    backgroundColor: COLORS.veryLightRed,
   },
   listBurger: {
     //backgroundColor: COLORS.grayOne,
     flex: 1,
-    top: "2%",
-    left: "2%",
-    marginEnd: "2%",
-    width: "100%",
+    marginTop: 10,
   },
   image: {
     width: 100,
@@ -208,6 +196,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginStart: 15,
+    color: COLORS.darkRed,
   },
   fidelityP: {
     flex: 1,
