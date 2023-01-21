@@ -26,7 +26,7 @@ import {
   useStripe,
   StripeProvider,
 } from "@stripe/stripe-react-native";
-import Payement from "../Payement";
+import { COLORS } from "../Colors";
 
 const adressEncoded = {
   street: "",
@@ -202,6 +202,7 @@ export default function Order({ navigation }) {
   const [adresseSelected, setAdressSelected] = React.useState();
   const [clientSecret, setClientSecret] = React.useState();
   const [cartToPost, setCartToPost] = React.useState();
+  const [totalPrice, setTotalPrice] = React.useState(0.0);
   //const [disabled, setDisabled] = React.useState(false);
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
@@ -236,11 +237,11 @@ export default function Order({ navigation }) {
                 fontSize: 20,
                 fontWeight: "bold",
                 position: "absolute",
-                top: 100,
+                top: 60,
                 marginStart: 35,
               }}
             >
-              Veuillez encoder au moins une adresses afin de passer commande
+              Veuillez encoder au moins une adresses
             </Text>
             <View style={styles.modalAddAdress}>
               <Text style={styles.titleInputText}>rue:</Text>
@@ -270,7 +271,9 @@ export default function Order({ navigation }) {
                 style={styles.modalSaveNewAdress}
                 onPress={() => postAdress()}
               >
-                <Text>Enregistrer</Text>
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  Enregistrer
+                </Text>
               </TouchableOpacity>
             </View>
           </SafeAreaView>
@@ -331,7 +334,7 @@ export default function Order({ navigation }) {
       <SafeAreaView>
         <View>
           <Text style={styles.modalTitle}>Options de livraison</Text>
-          <Text style={styles.modalSubTitle}>Adresse RECEIVED</Text>
+          <Text style={styles.modalSubTitle}>Choisissez une adresse:</Text>
           <View style={{ marginTop: 10, marginLeft: "80%" }}>
             <TouchableOpacity onPress={() => AddOneAdress()}>
               <Fontisto name="plus-a" size={20} color="black" />
@@ -348,7 +351,7 @@ export default function Order({ navigation }) {
                   <TouchableOpacity
                     style={
                       item === adresseSelected
-                        ? { backgroundColor: "yellow" }
+                        ? { backgroundColor: COLORS.veryLightRed }
                         : {}
                     }
                     onPress={() => {
@@ -358,7 +361,6 @@ export default function Order({ navigation }) {
                     <View style={styles.subRectangle}>
                       <Text
                         style={{
-                          backgroundColor: "red",
                           marginTop: 10,
                           marginBottom: 10,
                           marginStart: 20,
@@ -419,6 +421,7 @@ export default function Order({ navigation }) {
                   fontWeight: "bold",
                   fontStyle: "italic",
                   fontSize: 15,
+                  color: "white",
                 }}
               >
                 Payer avec Stripe
@@ -534,7 +537,7 @@ export default function Order({ navigation }) {
       });
   };
   const alertUpdateAdress = () =>
-    Alert.alert("Alert Title", "My Alert Msg", [
+    Alert.alert("Adresse", "Votre a été modifié", [
       {
         text: "Cancel",
         onPress: () => console.log("Cancel Pressed"),
@@ -575,6 +578,7 @@ export default function Order({ navigation }) {
     let postCity = city;
     let id = idToModify;
     console.log("Adress LET", postStreet, postCp, postCity);
+
     fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
       method: "PUT",
       headers: {
@@ -596,6 +600,7 @@ export default function Order({ navigation }) {
           const error = (data && data.message) || response.status;
           return Promise.reject(error);
         }
+
         getAddresses();
         alertUpdateAdress();
       })
@@ -639,12 +644,22 @@ export default function Order({ navigation }) {
   return (
     <SafeAreaView style={styles.safearea}>
       <View style={styles.header}>
-        <Text style={{ color: "black" }}>HEADER</Text>
+        <Text
+          style={{
+            color: "black",
+            fontWeight: "bold",
+            fontSize: 30,
+            marginStart: 20,
+          }}
+        >
+          Commande
+        </Text>
+
         <TouchableOpacity style={styles.trash} onPress={() => todo()}>
           <Ionicons
             style={{ textAlign: "center" }}
             name="md-trash-outline"
-            size={35}
+            size={30}
             color="black"
           />
           <Text>Vider le panier </Text>
@@ -663,7 +678,6 @@ export default function Order({ navigation }) {
                 marginStart: 20,
                 width: "25%",
                 height: "100%",
-                backgroundColor: "blue",
               }}
             >
               <Image
@@ -680,7 +694,6 @@ export default function Order({ navigation }) {
             </View>
             <View
               style={{
-                backgroundColor: "yellow",
                 width: "60%",
                 height: "100%",
                 marginEnd: 5,
@@ -689,14 +702,15 @@ export default function Order({ navigation }) {
               <Text
                 style={{
                   marginTop: 5,
-                  marginStart: 5,
+                  marginStart: 20,
+                  fontWeight: "bold",
                 }}
               >
                 {item.name}
               </Text>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{}}>X{item.qty}</Text>
-                <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row", marginTop: 20 }}>
+                <Text style={{ marginStart: 20 }}>X{item.qty}</Text>
+                <View style={{ flexDirection: "row", marginStart: 30 }}>
                   <TouchableOpacity>
                     <Ionicons name="md-add" size={16} color="black" />
                   </TouchableOpacity>
@@ -714,7 +728,11 @@ export default function Order({ navigation }) {
         style={styles.confirmButton}
         onPress={() => VerifyLogin()}
       >
-        <Text style={{ textAlign: "center" }}>Passer commande</Text>
+        <Text
+          style={{ textAlign: "center", color: "white", fontWeight: "bold" }}
+        >
+          Passer commande {totalPrice}€{" "}
+        </Text>
       </TouchableOpacity>
       <Modal style={styles.modal} visible={modalVisible} animationType="slide">
         <SafeAreaView>
@@ -757,33 +775,34 @@ export default function Order({ navigation }) {
 const styles = StyleSheet.create({
   safearea: {
     flex: 1,
-    backgroundColor: "#7fffd4",
     paddingTop: Platform.OS === "android" ? 25 : 0,
     alignItems: "center",
     justifyContent: "center",
   },
 
   header: {
-    position: "absolute",
-    top: 40,
+    marginTop: 20,
+    height: 80,
     width: "100%",
-    height: "12%",
-    backgroundColor: "salmon",
   },
   trash: {
     position: "absolute",
     right: 5,
-    bottom: 10,
+    top: 8,
   },
   listOrder: {
-    backgroundColor: `pink`,
-    marginTop: 85,
-    width: "90%",
-    left: 5,
+    backgroundColor: COLORS.grayOne,
+    marginTop: 5,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    width: "100%",
   },
   orderCell: {
     flexDirection: "row",
-    backgroundColor: "green",
+    backgroundColor: COLORS.white,
+    marginBottom: 15,
+    marginStart: 20,
+    marginEnd: 20,
     marginTop: 5,
     height: 80,
     borderRadius: 20,
@@ -792,7 +811,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     display: "flex",
     justifyContent: "center",
-    backgroundColor: `#dcdcdc`,
+    backgroundColor: COLORS.darkRed,
+    borderRadius: 20,
     bottom: 10,
     height: 40,
     marginStart: 5,
@@ -848,18 +868,22 @@ const styles = StyleSheet.create({
   },
   modalAddAdress: {
     marginStart: 35,
-    marginTop: 30,
-    backgroundColor: "pink",
+    marginTop: 10,
+    marginEnd: 35,
+    backgroundColor: COLORS.grayOne,
     width: "80%",
     top: "60%",
   },
   inputText: {
     borderColor: "#ccc",
-    backgroundColor: "yellow",
+    borderWidth: 2,
+    borderRadius: 10,
+    backgroundColor: "white",
     marginBottom: 30,
     borderBottomWidth: 1,
     borderBottomColor: "gray",
-    width: "100%",
+    marginTop: 10,
+    marginEnd: 10,
   },
   modalConnect: {
     position: "absolute",
@@ -877,7 +901,7 @@ const styles = StyleSheet.create({
   modalSaveNewAdress: {
     position: "absolute",
     display: "flex",
-    backgroundColor: "gray",
+    backgroundColor: COLORS.darkRed,
     justifyContent: "center",
     alignItems: "center",
     height: "20%",
@@ -891,7 +915,7 @@ const styles = StyleSheet.create({
   },
   containerButton: {
     position: "absolute",
-    marginTop: 400,
+    marginTop: 380,
     width: "100%",
     height: "100%",
     justifyContent: "center",
@@ -906,10 +930,13 @@ const styles = StyleSheet.create({
   },
   modalSubTitle: {
     marginTop: 20,
+    marginLeft: 20,
+    fontSize: 18,
+    fontWeight: "800",
   },
   flatListAdressContainer: {
     marginTop: 25,
-    backgroundColor: "pink",
+
     marginLeft: 30,
     marginRight: 30,
   },
@@ -917,7 +944,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     borderRadius: 25,
-    backgroundColor: "salmon",
+    backgroundColor: COLORS.grayOne,
     marginTop: 20,
     marginStart: 10,
     marginEnd: 20,
@@ -926,7 +953,8 @@ const styles = StyleSheet.create({
   viewButtonStripe: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "green",
+    backgroundColor: COLORS.darkRed,
+    borderRadius: 20,
     height: 40,
     marginTop: 100,
     marginLeft: 30,
@@ -938,7 +966,8 @@ const styles = StyleSheet.create({
   },
   subRectangle: {
     borderRadius: 25,
-    backgroundColor: "green",
+
+    borderRadius: 20,
     width: "90%",
     marginStart: 10,
     marginEnd: 20,
