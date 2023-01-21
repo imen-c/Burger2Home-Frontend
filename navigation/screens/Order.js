@@ -108,7 +108,10 @@ export default function Order({ navigation }) {
         console.log("ASYNC storage erreur getCart");
       }
     };
-    fetchIntentPayement();
+    if (!clientSecret) {
+      console.log("pas de client secret");
+      fetchIntentPayement();
+    }
 
     return unsubscribe;
   }, [navigation]);
@@ -198,6 +201,7 @@ export default function Order({ navigation }) {
   const [idToModify, setIdToModify] = React.useState(0);
   const [adresseSelected, setAdressSelected] = React.useState();
   const [clientSecret, setClientSecret] = React.useState();
+  const [cartToPost, setCartToPost] = React.useState();
   //const [disabled, setDisabled] = React.useState(false);
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
@@ -427,6 +431,7 @@ export default function Order({ navigation }) {
   };
   const fetchIntentPayement = async () => {
     if (token) {
+      console.log("Token present pour inten");
       let tok = token.toString();
       await fetch("http://10.0.2.2:8000/payment/stripe/intent", {
         method: "GET",
@@ -459,23 +464,29 @@ export default function Order({ navigation }) {
       //  name: 'Jane Doe',
       //}
     });
-    console.log("SUCCESS");
+    console.log("SUCCESS PROCEDD PAYment");
     if (!error) {
       setLoading(true);
     }
   };
   const openPaymentSheet = async () => {
-    console.log("JE RENTRE DANS OPENPAYEMENTSHEET");
+    //console.log("JE RENTRE DANS OPENPAYEMENTSHEET");
+    //console.log("DERNIER CLIENT SECRET", clientSecret);
     const { error } = await presentPaymentSheet({ clientSecret });
 
     if (error) {
-      Alert.alert(`Error code: ${error.code}`, error.message);
+      Alert.alert(`Error Payement Stripe code: ${error.code}`, error.message);
     } else {
+      todo(); // vider le panier
       Alert.alert("Success", "Your payment is confirmed!");
+      setModalVisible(false);
     }
   };
   const checkout = () => {
+    console.log("CART", cart);
+    postCart();
     openPaymentSheet();
+
     // save the order!
   };
   const VerifyLogin = () => {
@@ -485,6 +496,42 @@ export default function Order({ navigation }) {
     console.log("USER ", user);
     console.log("TOKEN passer commande", token);
     setModalVisible(true);
+  };
+  const postCart = async () => {
+    var list = [];
+    let i = 0;
+    for (i; i < orderList.length; i++) {
+      var product = {
+        id: orderList[i].id,
+        quantity: orderList[i].qty,
+      };
+      list.push(product);
+    }
+    setCartToPost(list);
+    console.log("LA LISTE", list);
+
+    await fetch("http://10.0.2.2:8000/baskets", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.toString()}`,
+      },
+
+      body: JSON.stringify({ burgers: cartToPost }),
+    })
+      .then((res) => {
+        res.json;
+        console.log("STATUT", res.status);
+      })
+      .then((data) => {
+        // enter you logic when the fetch is successful
+        console.log("DATA", data);
+        todo();
+      })
+      .catch((error) => {
+        // enter your logic for when there is an error (ex. error toast)
+        console.log("ERROR POst adrress", error);
+      });
   };
   const alertUpdateAdress = () =>
     Alert.alert("Alert Title", "My Alert Msg", [
@@ -582,9 +629,7 @@ export default function Order({ navigation }) {
         console.error("There was an error!", error);
       });
   };
-  const fetKeyPaymentIntent = () => {
-    return " ";
-  };
+
   const closeModale = () => {
     setTryMofify(false);
     setTryAddOne(false);
