@@ -27,53 +27,49 @@ import {
   StripeProvider,
 } from "@stripe/stripe-react-native";
 import { COLORS } from "../Colors";
+import { CartContext } from "../CartContext";
 
-const adressEncoded = {
+/* const adressEncoded = {
   street: "",
   code_postal: 0,
   city: "",
-};
+}; */
 
 export default function Order({ navigation }) {
+  const [user, setUser] = React.useState();
+  const [token, setToken] = React.useState();
+  const [cart, setCart] = React.useContext(CartContext);
+  const [totalPrice, setTotalPrice] = React.useState(0.0);
+  const [modalVisible, setModalVisible] = React.useState(false);
+
   React.useEffect(() => {
+    console.log("Premier useEffect");
+    console.log("CART RECU PAR ORDER ", cart);
+  }, []);
+  const verify = () => {
+    console.log("CART VERIFY", cart);
+  };
+  /*  React.useEffect(() => {
     console.log("changement sur User Load des addresses");
     //console.log("token", JSON.parse(token));
 
     let us = getDataUser();
     setUser(us);
-  }, [user]);
-  /*   React.useEffect(() => {
+  }, [user]);  */
+  /*  React.useEffect(() => {
     if (addresses.length == 3) {
       setDisabled(true);
     } else {
       setDisabled(false);
     }
-  }, [addresses]); */
+  }, [addresses]); 
   React.useEffect(() => {
     adressEncoded.city = city;
     adressEncoded.code_postal = codePostal;
     adressEncoded.street = street;
-  }, [street, codePostal, city]);
-  React.useEffect(() => {
-    console.log("1ere fois");
+  }, [street, codePostal, city]); */
 
-    /*     setClientSecret(
-      "pi_3MRNWCHp17SDAKMQ0opFA2vX_secret_h8A2JRjeZNl9MNWSWFm6OXU6x"
-    ); */
-    proceedPayement();
-    //console.log("token", JSON.parse(token));
-    if (user == null) {
-      let us = getDataUser();
-      setUser(us);
-      //let token = getToken();
-      //setToken(token);
-    }
-    fetchIntentPayement();
-    /*     setTimeout(() => {
-      this.setState({ color: 'wheat' });
-    }, 2000); */
-  }, []);
-  React.useEffect(() => {
+  /*   React.useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", (e) => {
       // Prevent default behavior
       //e.preventDefault();
@@ -95,8 +91,8 @@ export default function Order({ navigation }) {
       console.log("passer commande");
       console.log("USER ", user);
       console.log("TOKEN passer commande", token);
-    });
-    const getCart = async () => {
+    }); */
+  /*     const getCart = async () => {
       console.log("JE PASSE DANS LE GET CART");
       try {
         const jsonValue = await AsyncStorage.getItem("@cart");
@@ -114,8 +110,8 @@ export default function Order({ navigation }) {
     }
 
     return unsubscribe;
-  }, [navigation]);
-  const getDataUser = async () => {
+  }, [navigation]);  */
+  /*   const getDataUser = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem("@user");
       console.log("getUser Info", jsonValue);
@@ -128,8 +124,8 @@ export default function Order({ navigation }) {
     } catch (e) {
       console.log("ASYNC storage erreur getDATA");
     }
-  };
-  const getAddresses = async () => {
+  };  */
+  /*   const getAddresses = async () => {
     if (!(token == undefined)) {
       await fetch("http://10.0.2.2:8000/addresses", {
         method: "GET",
@@ -145,9 +141,9 @@ export default function Order({ navigation }) {
       console.log("USER ", user);
       console.log("TOKEN passer commande", token);
     }
-  };
+  }; */
 
-  const postAdress = async () => {
+  /*   const postAdress = async () => {
     let postStreet = street;
     let postCp = parseInt(codePostal);
     let postCity = city;
@@ -180,19 +176,18 @@ export default function Order({ navigation }) {
         // enter your logic for when there is an error (ex. error toast)
         console.log("ERROR POst adrress", error);
       });
-  };
+  }; */
 
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [user, setUser] = React.useState();
-  const [token, setToken] = React.useState();
+  /* 
+  
   const [isLoading, setLoading] = React.useState(true);
   const [addresses, setAddresses] = React.useState([]);
   const [cart, setCart] = React.useState();
-  const [street, setStreet] = React.useState("");
+  const [street, setStreet] = React.useState(""); */
   /*   const [streetInput, setStreetInput] = React.useState("");
   const [cPInput, setcPInput] = React.useState("");
   const [cityInput, setCityInput] = React.useState(""); */
-  const [codePostal, setCodePostal] = React.useState("");
+  /*  const [codePostal, setCodePostal] = React.useState("");
   const [city, setCity] = React.useState("");
   const [tryModify, setTryMofify] = React.useState(false);
   const [tryAddOne, setTryAddOne] = React.useState(false);
@@ -201,12 +196,12 @@ export default function Order({ navigation }) {
   const [adresseSelected, setAdressSelected] = React.useState();
   const [clientSecret, setClientSecret] = React.useState();
   const [cartToPost, setCartToPost] = React.useState();
-  const [totalPrice, setTotalPrice] = React.useState(0.0);
+*/
   //const [disabled, setDisabled] = React.useState(false);
-  const { initPaymentSheet, presentPaymentSheet } = useStripe();
-  const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
+  //const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  //const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
-  function todo() {
+  /*   function todo() {
     console.log(orderList), "liste reçu par order";
     emptyCart();
     console.log(orderList, "liste apres trash");
@@ -222,9 +217,9 @@ export default function Order({ navigation }) {
   const handleCity = (text) => {
     console.log("city", text);
     setCity(text);
-  };
+  }; */
 
-  const ChooseAdress = () => {
+  /* const ChooseAdress = () => {
     return (
       <View>
         {addresses.length > 0 && !tryModify && !tryAddOne && <AdressReceived />}
@@ -279,8 +274,8 @@ export default function Order({ navigation }) {
         )}
       </View>
     );
-  };
-  const ModifyAdressView = () => {
+  }; */
+  /*   const ModifyAdressView = () => {
     return (
       <SafeAreaView>
         <Text
@@ -327,8 +322,8 @@ export default function Order({ navigation }) {
         </View>
       </SafeAreaView>
     );
-  };
-  const AdressReceived = () => {
+  }; */
+  /* const AdressReceived = () => {
     return (
       <SafeAreaView>
         <View>
@@ -430,8 +425,8 @@ export default function Order({ navigation }) {
         </View>
       </SafeAreaView>
     );
-  };
-  const fetchIntentPayement = async () => {
+  }; */
+  /*   const fetchIntentPayement = async () => {
     if (token) {
       console.log("Token present pour inten");
       let tok = token.toString();
@@ -447,8 +442,8 @@ export default function Order({ navigation }) {
         .catch((error) => console.error(error))
         .finally(() => setLoading(false));
     }
-  };
-  const proceedPayement = async () => {
+  }; */
+  /*   const proceedPayement = async () => {
     //let pi = "pi_3MRNWCHp17SDAKMQ0opFA2vX_secret_h8A2JRjeZNl9MNWSWFm6OXU6x";
     // ici envoyer payement intent async le faire dans le useEffect 1:03:50
     // setClientsecret repose .data.createPaymentIntent.clientSecret
@@ -470,8 +465,8 @@ export default function Order({ navigation }) {
     if (!error) {
       setLoading(true);
     }
-  };
-  const openPaymentSheet = async () => {
+  }; */
+  /*   const openPaymentSheet = async () => {
     //console.log("JE RENTRE DANS OPENPAYEMENTSHEET");
     //console.log("DERNIER CLIENT SECRET", clientSecret);
     const { error } = await presentPaymentSheet({ clientSecret });
@@ -483,23 +478,23 @@ export default function Order({ navigation }) {
       Alert.alert("Success", "Your payment is confirmed!");
       setModalVisible(false);
     }
-  };
-  const checkout = () => {
+  }; */
+  /*   const checkout = () => {
     console.log("CART", cart);
     postCart();
     openPaymentSheet();
 
     // save the order!
-  };
-  const VerifyLogin = () => {
+  }; */
+  /*   const VerifyLogin = () => {
     getAddresses();
     console.log("Addresses recçue", addresses);
     console.log("passer commande");
     console.log("USER ", user);
     console.log("TOKEN passer commande", token);
     setModalVisible(true);
-  };
-  const postCart = async () => {
+  }; */
+  /*  const postCart = async () => {
     var list = [];
     let i = 0;
     for (i; i < orderList.length; i++) {
@@ -534,8 +529,8 @@ export default function Order({ navigation }) {
         // enter your logic for when there is an error (ex. error toast)
         console.log("ERROR POst adrress", error);
       });
-  };
-  const alertUpdateAdress = () =>
+  }; */
+  /*   const alertUpdateAdress = () =>
     Alert.alert("Adresse", "Votre a été modifié", [
       {
         text: "Cancel",
@@ -547,8 +542,8 @@ export default function Order({ navigation }) {
   const endAddAdress = () => {
     setTryMofify(false);
     setTryAddOne(false);
-  };
-  const AddOneAdress = () => {
+  }; */
+  /*   const AddOneAdress = () => {
     if (addresses.length === 3) {
       console.log("LENGTH 3");
       Alert.alert(
@@ -566,8 +561,8 @@ export default function Order({ navigation }) {
     } else {
       setTryAddOne(true);
     }
-  };
-  const ModifyAdress = (id) => {
+  }; */
+  /*   const ModifyAdress = (id) => {
     setTryMofify(true);
     setIdToModify(id);
   };
@@ -607,8 +602,8 @@ export default function Order({ navigation }) {
         setErrorMessage(error);
         console.error("There was an error!", error);
       });
-  };
-  const DeleteAdress = (id) => {
+  }; */
+  /*   const DeleteAdress = (id) => {
     fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
       method: "DELETE",
       headers: {
@@ -632,13 +627,13 @@ export default function Order({ navigation }) {
         setErrorMessage(error);
         console.error("There was an error!", error);
       });
-  };
+  }; */
 
-  const closeModale = () => {
+  /*   const closeModale = () => {
     setTryMofify(false);
     setTryAddOne(false);
     setModalVisible(false);
-  };
+  }; */
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -654,7 +649,7 @@ export default function Order({ navigation }) {
           Commande
         </Text>
 
-        <TouchableOpacity style={styles.trash} onPress={() => todo()}>
+        <TouchableOpacity style={styles.trash}>
           <Ionicons
             style={{ textAlign: "center" }}
             name="md-trash-outline"
@@ -665,7 +660,7 @@ export default function Order({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <FlatList
+      {/*       <FlatList
         style={styles.listOrder}
         data={orderList}
         extraData={cart}
@@ -721,12 +716,9 @@ export default function Order({ navigation }) {
             </View>
           </View>
         )}
-      />
+      /> */}
 
-      <TouchableOpacity
-        style={styles.confirmButton}
-        onPress={() => VerifyLogin()}
-      >
+      <TouchableOpacity style={styles.confirmButton} onPress={() => verify()}>
         <Text
           style={{ textAlign: "center", color: "white", fontWeight: "bold" }}
         >
@@ -735,7 +727,7 @@ export default function Order({ navigation }) {
       </TouchableOpacity>
       <Modal style={styles.modal} visible={modalVisible} animationType="slide">
         <SafeAreaView>
-          <TouchableOpacity onPress={() => closeModale()}>
+          <TouchableOpacity>
             <Ionicons
               style={styles.modalClose}
               name="close-circle-outline"
