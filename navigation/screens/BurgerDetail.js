@@ -1,5 +1,11 @@
-import React, { useEffect, useState, useSyncExternalStore } from "react";
+import React, {
+  useEffect,
+  useState,
+  useSyncExternalStore,
+  useContext,
+} from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { CartContext } from "../CartContext";
 import { orderListManage } from "./Order";
 import { AntDesign, Octicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,52 +19,35 @@ export function emptyCart() {
   console.log(orderList, "apres empycart");
 }
 const BurgerDetail = ({ navigation, route }) => {
-  console.log(orderList, "liste detail");
+  const [cart, setCart] = useContext(CartContext);
 
   const [orderItems, setOrderItems] = React.useState(orderList);
 
-  function edit(item) {
-    console.log("itemName", item.name);
-    let i = 0;
+  const addToCart = () => {
+    var actualList = cart;
+    const existingBurger = actualList.find(
+      (item) => item.id === route.params.item.id
+    );
 
-    for (i; i < orderItems.length; i++) {
-      if (orderItems[i].name == item.name) {
-        orderItems[i].qty = orderItems[i].qty + 1;
-        break;
-      } else {
-      }
-    }
+    if (existingBurger) {
+      existingBurger.qty += 1;
 
-    if (orderItems.find((ar) => ar.name === item.name)) {
-      console.log("LE FIND OK");
-      // console.log(item);
-      let i = 0;
-      for (i; i < orderList.length; i++) {
-        if (orderList[i].name == item.name) {
-          orderList[i].qty = orderList[i].qty + 1;
-
-          break;
-        }
-      }
-      setOrderItems(orderList);
+      setCart(actualList);
     } else {
       var burger = {
-        id: item.id,
-        name: item.name,
+        id: route.params.item.id,
+        name: route.params.item.name,
         qty: 1,
-        price: item.basePrice,
+        price: route.params.item.basePrice,
       };
-      orderList.push(burger);
+      actualList.push(burger);
+      setCart(actualList);
     }
 
-    setOrderItems(orderList);
-    storeCart(orderItems);
+    console.log("ACTUAL LIST", actualList);
+  };
 
-    console.log(orderList, "after EDIT");
-    console.log(orderItems, "items after EDIT");
-  }
-
-  const storeCart = async (dataAsync) => {
+  /*   const storeCart = async (dataAsync) => {
     try {
       let jsonValue = JSON.stringify(dataAsync);
       await AsyncStorage.setItem("@cart", jsonValue);
@@ -66,7 +55,7 @@ const BurgerDetail = ({ navigation, route }) => {
     } catch (e) {
       console.log("ASYNC storage erreur Cart", e.message);
     }
-  };
+  }; */
 
   return (
     <View style={styles.container}>
@@ -95,10 +84,7 @@ const BurgerDetail = ({ navigation, route }) => {
           Allergens <Octicons name="info" size={18} color="black" />
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => edit(route.params.item)}
-      >
+      <TouchableOpacity style={styles.addButton} onPress={() => addToCart()}>
         <Text
           style={{
             textAlign: "center",

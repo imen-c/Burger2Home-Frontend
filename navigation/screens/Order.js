@@ -119,14 +119,13 @@ export default function Order({ navigation }) {
     try {
       const jsonValue = await AsyncStorage.getItem("@user");
       console.log("getUser Info", jsonValue);
-      //setToken(JSON.parse(jsonValue).token);
+
       console.log("PARSE token", JSON.parse(jsonValue).token);
       let t = JSON.parse(jsonValue).token;
       console.log("TOKEN to String", t);
       setToken(t);
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (e) {
-      // lance une erreur
       console.log("ASYNC storage erreur getDATA");
     }
   };
