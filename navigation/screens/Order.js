@@ -19,7 +19,6 @@ import {
   Entypo,
   Fontisto,
 } from "@expo/vector-icons";
-import { orderList, emptyCart } from "./BurgerDetail";
 import {
   CardField,
   useConfirmPayment,
@@ -39,15 +38,23 @@ export default function Order({ navigation }) {
   const [user, setUser] = React.useState();
   const [token, setToken] = React.useState();
   const [cart, setCart] = React.useContext(CartContext);
+  const [myOrderList, setMyOrderList] = React.useState(cart);
   const [totalPrice, setTotalPrice] = React.useState(0.0);
   const [modalVisible, setModalVisible] = React.useState(false);
 
   React.useEffect(() => {
     console.log("Premier useEffect");
-    console.log("CART RECU PAR ORDER ", cart);
+    //console.log("CART RECU PAR ORDER ", cart);
   }, []);
+  React.useEffect(() => {
+    setMyOrderList(cart);
+    console.log("Changement percu sur cart");
+  }, [cart]);
   const verify = () => {
     console.log("CART VERIFY", cart);
+  };
+  const emptyCart = () => {
+    setCart([]);
   };
   /*  React.useEffect(() => {
     console.log("changement sur User Load des addresses");
@@ -201,12 +208,7 @@ export default function Order({ navigation }) {
   //const { initPaymentSheet, presentPaymentSheet } = useStripe();
   //const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
-  /*   function todo() {
-    console.log(orderList), "liste reçu par order";
-    emptyCart();
-    console.log(orderList, "liste apres trash");
-  }
-  const handleStreet = (text) => {
+  /* const handleStreet = (text) => {
     console.log("street", text);
     setStreet(text);
   };
@@ -649,7 +651,7 @@ export default function Order({ navigation }) {
           Commande
         </Text>
 
-        <TouchableOpacity style={styles.trash}>
+        <TouchableOpacity style={styles.trash} onPress={() => emptyCart()}>
           <Ionicons
             style={{ textAlign: "center" }}
             name="md-trash-outline"
@@ -660,9 +662,9 @@ export default function Order({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/*       <FlatList
+      <FlatList
         style={styles.listOrder}
-        data={orderList}
+        data={cart}
         extraData={cart}
         keyExtractor={(burger) => burger.name}
         renderItem={({ item }) => (
@@ -716,7 +718,7 @@ export default function Order({ navigation }) {
             </View>
           </View>
         )}
-      /> */}
+      />
 
       <TouchableOpacity style={styles.confirmButton} onPress={() => verify()}>
         <Text

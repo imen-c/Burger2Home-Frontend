@@ -11,40 +11,40 @@ import { AntDesign, Octicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS } from "../Colors";
 
-export var orderList = [];
-export function emptyCart() {
-  orderList = [];
-
-  console.log("je passe dans le emptyCart");
-  console.log(orderList, "apres empycart");
-}
 const BurgerDetail = ({ navigation, route }) => {
   const [cart, setCart] = useContext(CartContext);
 
-  const [orderItems, setOrderItems] = React.useState(orderList);
-
-  const addToCart = () => {
-    var actualList = cart;
-    const existingBurger = actualList.find(
+  const addToCart = (item) => {
+    //const actualList = cartObject.assign([], cart);
+    const existingBurger = cart.find(
       (item) => item.id === route.params.item.id
     );
 
     if (existingBurger) {
-      existingBurger.qty += 1;
+      //existingBurger.qty += 1;
 
-      setCart(actualList);
+      //setCart(actualList);
+      setCart(
+        cart.map((burger) => {
+          if (burger.id === existingBurger.id) {
+            return { ...burger, qty: burger.qty + 1 };
+          }
+          return burger;
+        })
+      );
     } else {
-      var burger = {
+      /*  var burger = {
         id: route.params.item.id,
         name: route.params.item.name,
         qty: 1,
         price: route.params.item.basePrice,
       };
       actualList.push(burger);
-      setCart(actualList);
+      setCart(actualList); */
+      setCart([...cart, { ...route.params.item, qty: 1 }]);
     }
 
-    console.log("ACTUAL LIST", actualList);
+    //console.log("ACTUAL LIST", actualList);
   };
 
   /*   const storeCart = async (dataAsync) => {
@@ -79,7 +79,7 @@ const BurgerDetail = ({ navigation, route }) => {
           </Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.allergButtons} onPress={() => unrase()}>
+      <TouchableOpacity style={styles.allergButtons}>
         <Text>
           Allergens <Octicons name="info" size={18} color="black" />
         </Text>
