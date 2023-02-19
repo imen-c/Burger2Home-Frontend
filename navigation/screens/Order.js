@@ -38,9 +38,13 @@ export default function Order({ navigation }) {
   const [user, setUser] = React.useState();
   const [token, setToken] = React.useState();
   const [cart, setCart] = React.useContext(CartContext);
+  const [addresses, setAddresses] = React.useState([]);
   const [myOrderList, setMyOrderList] = React.useState(cart);
   const [totalPrice, setTotalPrice] = React.useState(0.0);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [showAddressForm, setShowAddressForm] = React.useState(false);
+  const [tryModify, setTryMofify] = React.useState(false);
+  const [tryAddOne, setTryAddOne] = React.useState(false);
 
   React.useEffect(() => {
     console.log("Premier useEffect");
@@ -56,13 +60,7 @@ export default function Order({ navigation }) {
   const emptyCart = () => {
     setCart([]);
   };
-  /*  React.useEffect(() => {
-    console.log("changement sur User Load des addresses");
-    //console.log("token", JSON.parse(token));
 
-    let us = getDataUser();
-    setUser(us);
-  }, [user]);  */
   /*  React.useEffect(() => {
     if (addresses.length == 3) {
       setDisabled(true);
@@ -187,17 +185,14 @@ export default function Order({ navigation }) {
 
   /* 
   
-  const [isLoading, setLoading] = React.useState(true);
-  const [addresses, setAddresses] = React.useState([]);
-  const [cart, setCart] = React.useState();
+
   const [street, setStreet] = React.useState(""); */
   /*   const [streetInput, setStreetInput] = React.useState("");
   const [cPInput, setcPInput] = React.useState("");
   const [cityInput, setCityInput] = React.useState(""); */
   /*  const [codePostal, setCodePostal] = React.useState("");
   const [city, setCity] = React.useState("");
-  const [tryModify, setTryMofify] = React.useState(false);
-  const [tryAddOne, setTryAddOne] = React.useState(false);
+  
   const [tryToPay, setTryToPay] = React.useState(false);
   const [idToModify, setIdToModify] = React.useState(0);
   const [adresseSelected, setAdressSelected] = React.useState();
@@ -221,62 +216,6 @@ export default function Order({ navigation }) {
     setCity(text);
   }; */
 
-  /* const ChooseAdress = () => {
-    return (
-      <View>
-        {addresses.length > 0 && !tryModify && !tryAddOne && <AdressReceived />}
-        {tryModify && <ModifyAdressView />}
-        {(addresses === undefined || addresses.length == 0 || tryAddOne) && (
-          <SafeAreaView>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                position: "absolute",
-                top: 60,
-                marginStart: 35,
-              }}
-            >
-              Veuillez encoder au moins une adresses
-            </Text>
-            <View style={styles.modalAddAdress}>
-              <Text style={styles.titleInputText}>rue:</Text>
-              <TextInput
-                style={styles.inputText}
-                placeholder="Adresse 1"
-                onEndEditing={(e) => handleStreet(e.nativeEvent.text)}
-                defaultValue={street}
-              />
-              <Text style={styles.titleInputText}>code postal:</Text>
-              <TextInput
-                style={styles.inputText}
-                placeholder="Adresse 2"
-                onEndEditing={(e) => handleCP(e.nativeEvent.text)}
-                defaultValue={codePostal}
-              />
-              <Text style={styles.titleInputText}>ville:</Text>
-              <TextInput
-                style={styles.inputText}
-                placeholder="Adresse 3"
-                onEndEditing={(e) => handleCity(e.nativeEvent.text)}
-                defaultValue={city}
-              />
-            </View>
-            <View style={styles.containerButton}>
-              <TouchableOpacity
-                style={styles.modalSaveNewAdress}
-                onPress={() => postAdress()}
-              >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
-                  Enregistrer
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </SafeAreaView>
-        )}
-      </View>
-    );
-  }; */
   /*   const ModifyAdressView = () => {
     return (
       <SafeAreaView>
@@ -631,11 +570,70 @@ export default function Order({ navigation }) {
       });
   }; */
 
-  /*   const closeModale = () => {
-    setTryMofify(false);
-    setTryAddOne(false);
-    setModalVisible(false);
-  }; */
+  /*   
+            MANAGE ADDRESS
+   */
+  const ChooseAdress = () => {
+    console.log("CHOOSE ADRESS");
+    return (
+      <View>
+        {addresses.length > 0 && !tryModify && !tryAddOne && <AdressReceived />}
+        {tryModify && <ModifyAdressView />}
+        {(addresses === undefined || addresses.length == 0 || tryAddOne) && (
+          <SafeAreaView>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                position: "absolute",
+                top: 60,
+                marginStart: 35,
+              }}
+            >
+              Veuillez encoder au moins une adresses
+            </Text>
+            <View style={styles.modalAddAdress}>
+              <Text style={styles.titleInputText}>rue:</Text>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Adresse 1"
+                onEndEditing={(e) => handleStreet(e.nativeEvent.text)}
+                defaultValue={street}
+              />
+              <Text style={styles.titleInputText}>code postal:</Text>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Adresse 2"
+                onEndEditing={(e) => handleCP(e.nativeEvent.text)}
+                defaultValue={codePostal}
+              />
+              <Text style={styles.titleInputText}>ville:</Text>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Adresse 3"
+                onEndEditing={(e) => handleCity(e.nativeEvent.text)}
+                defaultValue={city}
+              />
+            </View>
+            <View style={styles.containerButton}>
+              <TouchableOpacity
+                style={styles.modalSaveNewAdress}
+                onPress={() => postAdress()}
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  Enregistrer
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        )}
+      </View>
+    );
+  };
+  function handleConfirmButton() {
+    setShowAddressForm(true);
+    console.log(showAddressForm);
+  }
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -661,86 +659,88 @@ export default function Order({ navigation }) {
           <Text>Vider le panier </Text>
         </TouchableOpacity>
       </View>
-
-      <FlatList
-        style={styles.listOrder}
-        data={cart}
-        extraData={cart}
-        keyExtractor={(burger) => burger.name}
-        renderItem={({ item }) => (
-          <View style={styles.orderCell}>
-            <View
-              style={{
-                marginStart: 20,
-                width: "25%",
-                height: "100%",
-              }}
-            >
-              <Image
-                style={{
-                  marginStart: 10,
-                  borderRadius: 20,
-                  height: 60,
-                  width: 60,
-                  marginBottom: 10,
-                  marginTop: 10,
-                }}
-                source={require("../../assets/burger.png")}
-              />
-            </View>
-            <View
-              style={{
-                width: "60%",
-                height: "100%",
-                marginEnd: 5,
-              }}
-            >
-              <Text
-                style={{
-                  marginTop: 5,
-                  marginStart: 20,
-                  fontWeight: "bold",
-                }}
-              >
-                {item.name}
-              </Text>
-              <View style={{ flexDirection: "row", marginTop: 20 }}>
-                <Text style={{ marginStart: 20 }}>X{item.qty}</Text>
-                <View style={{ flexDirection: "row", marginStart: 30 }}>
-                  <TouchableOpacity>
-                    <Ionicons name="md-add" size={16} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <AntDesign name="minus" size={16} color="black" />
-                  </TouchableOpacity>
+      {!showAddressForm && (
+        <View>
+          <FlatList
+            style={styles.listOrder}
+            data={cart}
+            extraData={cart}
+            keyExtractor={(burger) => burger.name}
+            renderItem={({ item }) => (
+              <View style={styles.orderCell}>
+                <View
+                  style={{
+                    marginStart: 20,
+                    width: "25%",
+                    height: "100%",
+                  }}
+                >
+                  <Image
+                    style={{
+                      marginStart: 10,
+                      borderRadius: 20,
+                      height: 60,
+                      width: 60,
+                      marginBottom: 10,
+                      marginTop: 10,
+                    }}
+                    source={require("../../assets/burger.png")}
+                  />
+                </View>
+                <View
+                  style={{
+                    width: "60%",
+                    height: "100%",
+                    marginEnd: 5,
+                  }}
+                >
+                  <Text
+                    style={{
+                      marginTop: 5,
+                      marginStart: 20,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {item.name}
+                  </Text>
+                  <View style={{ flexDirection: "row", marginTop: 20 }}>
+                    <Text style={{ marginStart: 20 }}>X{item.qty}</Text>
+                    <View style={{ flexDirection: "row", marginStart: 30 }}>
+                      <TouchableOpacity>
+                        <Ionicons name="md-add" size={16} color="black" />
+                      </TouchableOpacity>
+                      <TouchableOpacity>
+                        <AntDesign name="minus" size={16} color="black" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
               </View>
-            </View>
-          </View>
-        )}
-      />
+            )}
+          />
 
-      <TouchableOpacity style={styles.confirmButton} onPress={() => verify()}>
-        <Text
-          style={{ textAlign: "center", color: "white", fontWeight: "bold" }}
-        >
-          Passer commande {totalPrice}€{" "}
-        </Text>
-      </TouchableOpacity>
-      <Modal style={styles.modal} visible={modalVisible} animationType="slide">
-        <SafeAreaView>
-          <TouchableOpacity>
-            <Ionicons
-              style={styles.modalClose}
-              name="close-circle-outline"
-              size={20}
-              color="black"
-            />
+          <TouchableOpacity
+            style={styles.confirmButton}
+            onPress={() => handleConfirmButton()}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                color: "white",
+                fontWeight: "bold",
+              }}
+            >
+              Passer commande {totalPrice}€{" "}
+            </Text>
           </TouchableOpacity>
+        </View>
+      )}
+      {showAddressForm && (
+        <View>
           {user && <ChooseAdress />}
           {user == null && (
-            <SafeAreaView>
-              <Text
+            <View>
+              {/*     <Text
                 style={{
                   fontSize: 35,
                   fontWeight: "bold",
@@ -750,17 +750,17 @@ export default function Order({ navigation }) {
                 }}
               >
                 Welcome
-              </Text>
+              </Text> */}
               <TouchableOpacity
-                style={styles.modalConnect}
+                //style={styles.modalConnect}
                 onPress={() => navigation.navigate("MyB2H")}
               >
                 <Text>Connectez-Vous</Text>
               </TouchableOpacity>
-            </SafeAreaView>
+            </View>
           )}
-        </SafeAreaView>
-      </Modal>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -774,7 +774,8 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    marginTop: 20,
+    position: "absolute",
+    top: 30,
     height: 80,
     width: "100%",
   },
@@ -785,7 +786,7 @@ const styles = StyleSheet.create({
   },
   listOrder: {
     backgroundColor: COLORS.grayOne,
-    marginTop: 5,
+    top: 130,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
     width: "100%",
