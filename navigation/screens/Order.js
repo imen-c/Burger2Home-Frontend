@@ -46,14 +46,36 @@ export default function Order({ navigation }) {
   const [tryModify, setTryMofify] = React.useState(false);
   const [tryAddOne, setTryAddOne] = React.useState(false);
 
+  const [street, setStreet] = React.useState("");
+  const [codePostal, setCodePostal] = React.useState("");
+  const [city, setCity] = React.useState("");
+
   React.useEffect(() => {
     console.log("Premier useEffect");
     //console.log("CART RECU PAR ORDER ", cart);
+    getDataUser();
   }, []);
   React.useEffect(() => {
     setMyOrderList(cart);
     console.log("Changement percu sur cart");
   }, [cart]);
+
+  const getDataUser = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@user");
+      console.log("USER INFO --> order", jsonValue);
+
+      //console.log("PARSE token", JSON.parse(jsonValue).token);
+      let t = JSON.parse(jsonValue).token;
+      let us = JSON.parse(jsonValue).nom;
+      //console.log("TOKEN to String", t);
+      setToken(t);
+      setUser(us);
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      console.log("ASYNC STORAGE ERREUR GET USER INFO ORDER");
+    }
+  };
   const verify = () => {
     console.log("CART VERIFY", cart);
   };
@@ -74,48 +96,6 @@ export default function Order({ navigation }) {
     adressEncoded.street = street;
   }, [street, codePostal, city]); */
 
-  /*   React.useEffect(() => {
-    const unsubscribe = navigation.addListener("tabPress", (e) => {
-      // Prevent default behavior
-      //e.preventDefault();
-      console.log("TabPress");
-      let cart = getCart();
-      setCart(cart);
-      if (user == null) {
-        let us = getDataUser();
-        setUser(us);
-        //let token = getToken();
-        //setToken(token);
-      }
-      getAddresses();
-
-      // Do something manually
-      // ...
-
-      console.log("Addresses recçue", addresses);
-      console.log("passer commande");
-      console.log("USER ", user);
-      console.log("TOKEN passer commande", token);
-    }); */
-  /*     const getCart = async () => {
-      console.log("JE PASSE DANS LE GET CART");
-      try {
-        const jsonValue = await AsyncStorage.getItem("@cart");
-
-        console.log("CART storage", jsonValue);
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-      } catch (e) {
-        // lance une erreur
-        console.log("ASYNC storage erreur getCart");
-      }
-    };
-    if (!clientSecret) {
-      console.log("pas de client secret");
-      fetchIntentPayement();
-    }
-
-    return unsubscribe;
-  }, [navigation]);  */
   /*   const getDataUser = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem("@user");
@@ -183,15 +163,10 @@ export default function Order({ navigation }) {
       });
   }; */
 
-  /* 
-  
-
-  const [street, setStreet] = React.useState(""); */
   /*   const [streetInput, setStreetInput] = React.useState("");
   const [cPInput, setcPInput] = React.useState("");
   const [cityInput, setCityInput] = React.useState(""); */
-  /*  const [codePostal, setCodePostal] = React.useState("");
-  const [city, setCity] = React.useState("");
+  /*  
   
   const [tryToPay, setTryToPay] = React.useState(false);
   const [idToModify, setIdToModify] = React.useState(0);
@@ -632,7 +607,7 @@ export default function Order({ navigation }) {
   };
   function handleConfirmButton() {
     setShowAddressForm(true);
-    console.log(showAddressForm);
+    console.log("SHOWADRESSFORM", showAddressForm);
   }
 
   return (
