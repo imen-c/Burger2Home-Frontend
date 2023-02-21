@@ -28,12 +28,6 @@ import {
 import { COLORS } from "../Colors";
 import { CartContext } from "../CartContext";
 
-/* const adressEncoded = {
-  street: "",
-  code_postal: 0,
-  city: "",
-}; */
-
 export default function Order({ navigation }) {
   const [user, setUser] = React.useState();
   const [token, setToken] = React.useState();
@@ -43,7 +37,9 @@ export default function Order({ navigation }) {
   const [totalPrice, setTotalPrice] = React.useState(0.0);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [showAddressForm, setShowAddressForm] = React.useState(false);
+  const [adresseSelected, setAdressSelected] = React.useState();
   const [tryModify, setTryMofify] = React.useState(false);
+  const [idToModify, setIdToModify] = React.useState(0);
   const [tryAddOne, setTryAddOne] = React.useState(false);
 
   const [street, setStreet] = React.useState("");
@@ -71,6 +67,7 @@ export default function Order({ navigation }) {
       //console.log("TOKEN to String", t);
       setToken(t);
       setUser(us);
+      getAddresses();
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (e) {
       console.log("ASYNC STORAGE ERREUR GET USER INFO ORDER");
@@ -110,67 +107,12 @@ export default function Order({ navigation }) {
       console.log("ASYNC storage erreur getDATA");
     }
   };  */
-  /*   const getAddresses = async () => {
-    if (!(token == undefined)) {
-      await fetch("http://10.0.2.2:8000/addresses", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token.toString()}` },
-      })
-        .then((response) => response.json())
-        .then((json) => setAddresses(json))
-        .catch((error) => console.error(error))
-        .finally(() => setLoading(false));
 
-      console.log("Addresses recçue", addresses);
-      console.log("passer commande");
-      console.log("USER ", user);
-      console.log("TOKEN passer commande", token);
-    }
-  }; */
-
-  /*   const postAdress = async () => {
-    let postStreet = street;
-    let postCp = parseInt(codePostal);
-    let postCity = city;
-    console.log("Adress LET", postStreet, postCp, postCity);
-
-    await fetch("http://10.0.2.2:8000/addresses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.toString()}`,
-      },
-
-      body: JSON.stringify({
-        street: postStreet,
-        postal_code: postCp,
-        city: postCity,
-      }),
-    })
-      .then((res) => {
-        res.json;
-        console.log("STATUT", res.status);
-      })
-      .then((data) => {
-        // enter you logic when the fetch is successful
-        console.log("DATA", data);
-        getAddresses();
-        alertUpdateAdress();
-      })
-      .catch((error) => {
-        // enter your logic for when there is an error (ex. error toast)
-        console.log("ERROR POst adrress", error);
-      });
-  }; */
-
-  /*   const [streetInput, setStreetInput] = React.useState("");
-  const [cPInput, setcPInput] = React.useState("");
-  const [cityInput, setCityInput] = React.useState(""); */
   /*  
   
   const [tryToPay, setTryToPay] = React.useState(false);
-  const [idToModify, setIdToModify] = React.useState(0);
-  const [adresseSelected, setAdressSelected] = React.useState();
+  
+  
   const [clientSecret, setClientSecret] = React.useState();
   const [cartToPost, setCartToPost] = React.useState();
 */
@@ -178,67 +120,6 @@ export default function Order({ navigation }) {
   //const { initPaymentSheet, presentPaymentSheet } = useStripe();
   //const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
-  /* const handleStreet = (text) => {
-    console.log("street", text);
-    setStreet(text);
-  };
-  const handleCP = (text) => {
-    console.log("CP", text);
-    setCodePostal(text);
-  };
-  const handleCity = (text) => {
-    console.log("city", text);
-    setCity(text);
-  }; */
-
-  /*   const ModifyAdressView = () => {
-    return (
-      <SafeAreaView>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-            position: "absolute",
-            top: 100,
-            marginStart: 35,
-          }}
-        >
-          Vous souhaitez modifier votre adresse
-        </Text>
-        <View style={styles.modalAddAdress}>
-          <Text style={styles.titleInputText}>rue:</Text>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Adresse 1"
-            onEndEditing={(e) => handleStreet(e.nativeEvent.text)}
-            defaultValue={street}
-          />
-          <Text style={styles.titleInputText}>code postal:</Text>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Adresse 2"
-            onEndEditing={(e) => handleCP(e.nativeEvent.text)}
-            defaultValue={codePostal}
-          />
-          <Text style={styles.titleInputText}>ville:</Text>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Adresse 3"
-            onEndEditing={(e) => handleCity(e.nativeEvent.text)}
-            defaultValue={city}
-          />
-        </View>
-        <View style={styles.containerButton}>
-          <TouchableOpacity
-            style={styles.modalSaveNewAdress}
-            onPress={() => ModifyAdressCall()}
-          >
-            <Text>Enregistrer</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    );
-  }; */
   /* const AdressReceived = () => {
     return (
       <SafeAreaView>
@@ -446,19 +327,6 @@ export default function Order({ navigation }) {
         console.log("ERROR POst adrress", error);
       });
   }; */
-  /*   const alertUpdateAdress = () =>
-    Alert.alert("Adresse", "Votre a été modifié", [
-      {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
-      { text: "OK", onPress: () => endAddAdress() },
-    ]);
-  const endAddAdress = () => {
-    setTryMofify(false);
-    setTryAddOne(false);
-  }; */
   /*   const AddOneAdress = () => {
     if (addresses.length === 3) {
       console.log("LENGTH 3");
@@ -478,47 +346,7 @@ export default function Order({ navigation }) {
       setTryAddOne(true);
     }
   }; */
-  /*   const ModifyAdress = (id) => {
-    setTryMofify(true);
-    setIdToModify(id);
-  };
-  const ModifyAdressCall = () => {
-    let postStreet = street;
-    let postCp = parseInt(codePostal);
-    let postCity = city;
-    let id = idToModify;
-    console.log("Adress LET", postStreet, postCp, postCity);
 
-    fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.toString()}`,
-      },
-      body: JSON.stringify({
-        street: postStreet,
-        postal_code: postCp,
-        city: postCity,
-      }),
-    })
-      .then(async (response) => {
-        const data = await response.json();
-
-        // check for error response
-        if (!response.ok) {
-          // get error message from body or default to response status
-          const error = (data && data.message) || response.status;
-          return Promise.reject(error);
-        }
-
-        getAddresses();
-        alertUpdateAdress();
-      })
-      .catch((error) => {
-        setErrorMessage(error);
-        console.error("There was an error!", error);
-      });
-  }; */
   /*   const DeleteAdress = (id) => {
     fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
       method: "DELETE",
@@ -593,7 +421,7 @@ export default function Order({ navigation }) {
             <View style={styles.containerButton}>
               <TouchableOpacity
                 style={styles.modalSaveNewAdress}
-                onPress={() => postAdress()}
+                onPress={() => postAddress()}
               >
                 <Text style={{ color: "white", fontWeight: "bold" }}>
                   Enregistrer
@@ -605,113 +433,379 @@ export default function Order({ navigation }) {
       </View>
     );
   };
+  const AdressReceived = () => {
+    return (
+      <SafeAreaView>
+        <View>
+          <Text style={styles.modalTitle}>Options de livraison</Text>
+          <Text style={styles.modalSubTitle}>Choisissez une adresse:</Text>
+          <View style={{ marginTop: 10, marginLeft: "80%" }}>
+            <TouchableOpacity onPress={() => AddOneAdress()}>
+              <Fontisto name="plus-a" size={20} color="black" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.flatListAdressContainer}>
+            <FlatList
+              data={addresses}
+              extraData={addresses}
+              keyExtractor={(adresse) => adresse.id}
+              renderItem={({ item }) => (
+                <View style={styles.rectangle}>
+                  <TouchableOpacity
+                    style={
+                      item === adresseSelected
+                        ? { backgroundColor: COLORS.veryLightRed }
+                        : {}
+                    }
+                    onPress={() => {
+                      setAdressSelected(item);
+                    }}
+                  >
+                    <View style={styles.subRectangle}>
+                      <Text
+                        style={{
+                          marginTop: 10,
+                          marginBottom: 10,
+                          marginStart: 20,
+                          marginEnd: 20,
+                        }}
+                      >
+                        {item.street}
+                      </Text>
+
+                      <Text style={{ marginStart: 20, marginBottom: 10 }}>
+                        {item.postal_code}
+                        {"   "}
+                        {item.city}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <View
+                    style={{
+                      width: "20%",
+                      marginEnd: 0,
+                    }}
+                  >
+                    <TouchableOpacity onPress={() => ModifyAdress(item.id)}>
+                      <Entypo
+                        style={{
+                          paddingTop: 10,
+                          paddingEnd: 5,
+                        }}
+                        name="edit"
+                        size={21}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => DeleteAdress(item.id)}>
+                      <AntDesign
+                        style={{
+                          paddingTop: 8,
+                          paddingEnd: 5,
+                        }}
+                        name="delete"
+                        size={21}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            />
+          </View>
+          <View style={styles.viewButtonStripe}>
+            <TouchableOpacity
+              style={styles.buttonStripe}
+              onPress={() => checkout()}
+            >
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontStyle: "italic",
+                  fontSize: 15,
+                  color: "white",
+                }}
+              >
+                Payer avec Stripe
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  };
+  const ModifyAdressView = () => {
+    return (
+      <SafeAreaView>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            position: "absolute",
+            top: 100,
+            marginStart: 35,
+          }}
+        >
+          Vous souhaitez modifier votre adresse
+        </Text>
+        <View style={styles.modalAddAdress}>
+          <Text style={styles.titleInputText}>rue:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="rue"
+            onEndEditing={(e) => handleStreet(e.nativeEvent.text)}
+            defaultValue={street}
+          />
+          <Text style={styles.titleInputText}>code postal:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="CP"
+            onEndEditing={(e) => handleCP(e.nativeEvent.text)}
+            defaultValue={codePostal}
+          />
+          <Text style={styles.titleInputText}>ville:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="Ville"
+            onEndEditing={(e) => handleCity(e.nativeEvent.text)}
+            defaultValue={city}
+          />
+        </View>
+        <View style={styles.containerButton}>
+          <TouchableOpacity
+            style={styles.modalSaveNewAdress}
+            onPress={() => ModifyAdressCall()}
+          >
+            <Text>Enregistrer</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  };
   function handleConfirmButton() {
+    getAddresses();
     setShowAddressForm(true);
     console.log("SHOWADRESSFORM", showAddressForm);
   }
+  const handleStreet = (text) => {
+    console.log("street", text);
+    setStreet(text);
+  };
+  const handleCP = (text) => {
+    console.log("CP", text);
+    setCodePostal(text);
+  };
+  const handleCity = (text) => {
+    console.log("city", text);
+    setCity(text);
+  };
+  const postAddress = async () => {
+    const oneAddress = {
+      street: street,
+      postal_code: parseInt(codePostal),
+      city: city,
+    };
+
+    console.log("ONE ADDRESS", oneAddress);
+
+    await fetch("http://10.0.2.2:8000/addresses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.toString()}`,
+      },
+
+      body: JSON.stringify(oneAddress),
+    })
+      .then((res) => {
+        res.json;
+        console.log("STATUT", res.status);
+      })
+      .then((data) => {
+        // enter you logic when the fetch is successful
+        console.log("DATA", data);
+        getAddresses();
+        alertUpdateAdress();
+      })
+      .catch((error) => {
+        // enter your logic for when there is an error (ex. error toast)
+        console.log("ERROR POst ONE adrress", error);
+      });
+  };
+  const getAddresses = async () => {
+    if (!(token == undefined)) {
+      await fetch("http://10.0.2.2:8000/addresses", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token.toString()}` },
+      })
+        .then((response) => response.json())
+        .then((json) => setAddresses(json))
+        .catch((error) => console.error(error));
+      //.finally(() => setLoading(false));
+
+      console.log("Addresses recçue", addresses);
+    }
+  };
+  const ModifyAdress = (id) => {
+    setTryMofify(true);
+    setIdToModify(id);
+  };
+  const ModifyAdressCall = () => {
+    const oneAddress = {
+      street: street,
+      postal_code: parseInt(codePostal),
+      city: city,
+    };
+
+    console.log("ADRESS TO MODIFY", oneAddress);
+
+    fetch(`http://10.0.2.2:8000/addresses/${idToModify.toString()}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.toString()}`,
+      },
+      body: JSON.stringify(oneAddress),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        // check for error response
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (data && data.message) || response.status;
+          return Promise.reject(error);
+        }
+
+        getAddresses();
+        alertUpdateAdress();
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+        console.error("There was an error!", error);
+      });
+  };
+  const alertUpdateAdress = () =>
+    Alert.alert("Adresse", "Votre a été modifié", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => endAddAdress() },
+    ]);
+  const endAddAdress = () => {
+    setTryMofify(false);
+    setTryAddOne(false);
+  };
 
   return (
     <SafeAreaView style={styles.safearea}>
-      <View style={styles.header}>
-        <Text
-          style={{
-            color: "black",
-            fontWeight: "bold",
-            fontSize: 30,
-            marginStart: 20,
-          }}
-        >
-          Commande
-        </Text>
-
-        <TouchableOpacity style={styles.trash} onPress={() => emptyCart()}>
-          <Ionicons
-            style={{ textAlign: "center" }}
-            name="md-trash-outline"
-            size={30}
-            color="black"
-          />
-          <Text>Vider le panier </Text>
-        </TouchableOpacity>
-      </View>
       {!showAddressForm && (
         <View>
-          <FlatList
-            style={styles.listOrder}
-            data={cart}
-            extraData={cart}
-            keyExtractor={(burger) => burger.name}
-            renderItem={({ item }) => (
-              <View style={styles.orderCell}>
-                <View
-                  style={{
-                    marginStart: 20,
-                    width: "25%",
-                    height: "100%",
-                  }}
-                >
-                  <Image
+          <View style={styles.header}>
+            <Text
+              style={{
+                color: "black",
+                fontWeight: "bold",
+                fontSize: 30,
+                marginStart: 20,
+              }}
+            >
+              Commande
+            </Text>
+
+            <TouchableOpacity style={styles.trash} onPress={() => emptyCart()}>
+              <Ionicons
+                style={{ textAlign: "center" }}
+                name="md-trash-outline"
+                size={30}
+                color="black"
+              />
+              <Text>Vider le panier </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View>
+            <FlatList
+              style={styles.listOrder}
+              data={cart}
+              extraData={cart}
+              keyExtractor={(burger) => burger.name}
+              renderItem={({ item }) => (
+                <View style={styles.orderCell}>
+                  <View
                     style={{
-                      marginStart: 10,
-                      borderRadius: 20,
-                      height: 60,
-                      width: 60,
-                      marginBottom: 10,
-                      marginTop: 10,
-                    }}
-                    source={require("../../assets/burger.png")}
-                  />
-                </View>
-                <View
-                  style={{
-                    width: "60%",
-                    height: "100%",
-                    marginEnd: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      marginTop: 5,
                       marginStart: 20,
-                      fontWeight: "bold",
+                      width: "25%",
+                      height: "100%",
                     }}
                   >
-                    {item.name}
-                  </Text>
-                  <View style={{ flexDirection: "row", marginTop: 20 }}>
-                    <Text style={{ marginStart: 20 }}>X{item.qty}</Text>
-                    <View style={{ flexDirection: "row", marginStart: 30 }}>
-                      <TouchableOpacity>
-                        <Ionicons name="md-add" size={16} color="black" />
-                      </TouchableOpacity>
-                      <TouchableOpacity>
-                        <AntDesign name="minus" size={16} color="black" />
-                      </TouchableOpacity>
+                    <Image
+                      style={{
+                        marginStart: 10,
+                        borderRadius: 20,
+                        height: 60,
+                        width: 60,
+                        marginBottom: 10,
+                        marginTop: 10,
+                      }}
+                      source={require("../../assets/burger.png")}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      width: "60%",
+                      height: "100%",
+                      marginEnd: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        marginTop: 5,
+                        marginStart: 20,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                    <View style={{ flexDirection: "row", marginTop: 20 }}>
+                      <Text style={{ marginStart: 20 }}>X{item.qty}</Text>
+                      <View style={{ flexDirection: "row", marginStart: 30 }}>
+                        <TouchableOpacity>
+                          <Ionicons name="md-add" size={16} color="black" />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                          <AntDesign name="minus" size={16} color="black" />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                 </View>
-              </View>
-            )}
-          />
+              )}
+            />
 
-          <TouchableOpacity
-            style={styles.confirmButton}
-            onPress={() => handleConfirmButton()}
-          >
-            <Text
-              style={{
-                textAlign: "center",
-                color: "white",
-                fontWeight: "bold",
-              }}
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={() => handleConfirmButton()}
             >
-              Passer commande {totalPrice}€{" "}
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "white",
+                  fontWeight: "bold",
+                }}
+              >
+                Passer commande {totalPrice}€{" "}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
       {showAddressForm && (
-        <View>
+        <View style={styles.confirmView}>
           {user && <ChooseAdress />}
           {user == null && (
             <View>
@@ -742,7 +836,7 @@ export default function Order({ navigation }) {
 
 const styles = StyleSheet.create({
   safearea: {
-    flex: 1,
+    //flex: 1,
     paddingTop: Platform.OS === "android" ? 25 : 0,
     alignItems: "center",
     justifyContent: "center",
@@ -787,6 +881,11 @@ const styles = StyleSheet.create({
     marginStart: 5,
     marginEnd: 5,
     width: "97%",
+  },
+  confirmView: {
+    width: "100%",
+    top: 0,
+    bottom: 25,
   },
   modal: {
     borderTopLeftRadius: 10,
