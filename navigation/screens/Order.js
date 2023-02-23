@@ -41,6 +41,7 @@ export default function Order({ navigation }) {
   const [tryModify, setTryMofify] = React.useState(false);
   const [idToModify, setIdToModify] = React.useState(0);
   const [tryAddOne, setTryAddOne] = React.useState(false);
+  const [typeAlert, setTypeAlert] = React.useState("");
 
   const [street, setStreet] = React.useState("");
   const [codePostal, setCodePostal] = React.useState("");
@@ -73,9 +74,7 @@ export default function Order({ navigation }) {
       console.log("ASYNC STORAGE ERREUR GET USER INFO ORDER");
     }
   };
-  const verify = () => {
-    console.log("CART VERIFY", cart);
-  };
+
   const emptyCart = () => {
     setCart([]);
   };
@@ -93,21 +92,6 @@ export default function Order({ navigation }) {
     adressEncoded.street = street;
   }, [street, codePostal, city]); */
 
-  /*   const getDataUser = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@user");
-      console.log("getUser Info", jsonValue);
-
-      console.log("PARSE token", JSON.parse(jsonValue).token);
-      let t = JSON.parse(jsonValue).token;
-      console.log("TOKEN to String", t);
-      setToken(t);
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      console.log("ASYNC storage erreur getDATA");
-    }
-  };  */
-
   /*  
   
   const [tryToPay, setTryToPay] = React.useState(false);
@@ -120,109 +104,6 @@ export default function Order({ navigation }) {
   //const { initPaymentSheet, presentPaymentSheet } = useStripe();
   //const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
-  /* const AdressReceived = () => {
-    return (
-      <SafeAreaView>
-        <View>
-          <Text style={styles.modalTitle}>Options de livraison</Text>
-          <Text style={styles.modalSubTitle}>Choisissez une adresse:</Text>
-          <View style={{ marginTop: 10, marginLeft: "80%" }}>
-            <TouchableOpacity onPress={() => AddOneAdress()}>
-              <Fontisto name="plus-a" size={20} color="black" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.flatListAdressContainer}>
-            <FlatList
-              data={addresses}
-              extraData={addresses}
-              keyExtractor={(adresse) => adresse.id}
-              renderItem={({ item }) => (
-                <View style={styles.rectangle}>
-                  <TouchableOpacity
-                    style={
-                      item === adresseSelected
-                        ? { backgroundColor: COLORS.veryLightRed }
-                        : {}
-                    }
-                    onPress={() => {
-                      setAdressSelected(item);
-                    }}
-                  >
-                    <View style={styles.subRectangle}>
-                      <Text
-                        style={{
-                          marginTop: 10,
-                          marginBottom: 10,
-                          marginStart: 20,
-                          marginEnd: 20,
-                        }}
-                      >
-                        {item.street}
-                      </Text>
-
-                      <Text style={{ marginStart: 20, marginBottom: 10 }}>
-                        {item.postal_code}
-                        {"   "}
-                        {item.city}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-
-                  <View
-                    style={{
-                      width: "20%",
-                      marginEnd: 0,
-                    }}
-                  >
-                    <TouchableOpacity onPress={() => ModifyAdress(item.id)}>
-                      <Entypo
-                        style={{
-                          paddingTop: 10,
-                          paddingEnd: 5,
-                        }}
-                        name="edit"
-                        size={21}
-                        color="black"
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => DeleteAdress(item.id)}>
-                      <AntDesign
-                        style={{
-                          paddingTop: 8,
-                          paddingEnd: 5,
-                        }}
-                        name="delete"
-                        size={21}
-                        color="black"
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-            />
-          </View>
-          <View style={styles.viewButtonStripe}>
-            <TouchableOpacity
-              style={styles.buttonStripe}
-              onPress={() => checkout()}
-            >
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  fontStyle: "italic",
-                  fontSize: 15,
-                  color: "white",
-                }}
-              >
-                Payer avec Stripe
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </SafeAreaView>
-    );
-  }; */
   /*   const fetchIntentPayement = async () => {
     if (token) {
       console.log("Token present pour inten");
@@ -327,51 +208,6 @@ export default function Order({ navigation }) {
         console.log("ERROR POst adrress", error);
       });
   }; */
-  /*   const AddOneAdress = () => {
-    if (addresses.length === 3) {
-      console.log("LENGTH 3");
-      Alert.alert(
-        "Ajout",
-        "Vous avez enregistré un maximum de 3 adresses, veuillez modifier ou supprimer l'une d'elles",
-        [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "OK", onPress: () => console.log("ok Pressed") },
-        ]
-      );
-    } else {
-      setTryAddOne(true);
-    }
-  }; */
-
-  /*   const DeleteAdress = (id) => {
-    fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.toString()}`,
-      },
-    })
-      .then(async (response) => {
-        const data = await response.json();
-
-        // check for error response
-        if (!response.ok) {
-          // get error message from body or default to response status
-          const error = (data && data.message) || response.status;
-          return Promise.reject(error);
-        }
-        getAddresses();
-        alertUpdateAdress();
-      })
-      .catch((error) => {
-        setErrorMessage(error);
-        console.error("There was an error!", error);
-      });
-  }; */
 
   /*   
             MANAGE ADDRESS
@@ -409,6 +245,7 @@ export default function Order({ navigation }) {
                 placeholder="Adresse 2"
                 onEndEditing={(e) => handleCP(e.nativeEvent.text)}
                 defaultValue={codePostal}
+                keyboardType="numeric"
               />
               <Text style={styles.titleInputText}>ville:</Text>
               <TextInput
@@ -627,7 +464,7 @@ export default function Order({ navigation }) {
         // enter you logic when the fetch is successful
         console.log("DATA", data);
         getAddresses();
-        alertUpdateAdress();
+        alertAddAdress();
       })
       .catch((error) => {
         // enter your logic for when there is an error (ex. error toast)
@@ -687,8 +524,8 @@ export default function Order({ navigation }) {
         console.error("There was an error!", error);
       });
   };
-  const alertUpdateAdress = () =>
-    Alert.alert("Adresse", "Votre a été modifié", [
+  const alertAddAdress = () => {
+    Alert.alert("", "Votre adresse a été ajoutée", [
       {
         text: "Cancel",
         onPress: () => console.log("Cancel Pressed"),
@@ -696,9 +533,75 @@ export default function Order({ navigation }) {
       },
       { text: "OK", onPress: () => endAddAdress() },
     ]);
+  };
+  const alertUpdateAdress = () => {
+    Alert.alert("", "Votre adresse a été modifié", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => endAddAdress() },
+    ]);
+  };
+  const alertDeleteAdress = () => {
+    Alert.alert("", "Votre adresse a été supprimée", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => endAddAdress() },
+    ]);
+  };
   const endAddAdress = () => {
     setTryMofify(false);
     setTryAddOne(false);
+  };
+  const AddOneAdress = () => {
+    if (addresses.length === 3) {
+      console.log("LENGTH 3");
+      Alert.alert(
+        "Ajout",
+        "Vous avez enregistré un maximum de 3 adresses, veuillez modifier ou supprimer l'une d'elles",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => console.log("ok Pressed") },
+        ]
+      );
+    } else {
+      setTryAddOne(true);
+    }
+  };
+
+  const DeleteAdress = (id) => {
+    fetch(`http://10.0.2.2:8000/addresses/${id.toString()}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.toString()}`,
+      },
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        // check for error response
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (data && data.message) || response.status;
+          return Promise.reject(error);
+        }
+        getAddresses();
+        alertDeleteAdress();
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+        console.error("There was an error!", error);
+      });
   };
 
   return (
