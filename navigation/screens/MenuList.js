@@ -52,6 +52,8 @@ const listings = [
 export default function MenuList({ navigation }) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [categoryId, setCategoryId] = useState(1);
+
   console.log(data);
 
   useEffect(() => {
@@ -61,7 +63,18 @@ export default function MenuList({ navigation }) {
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, []);
-  // console.log("CATTTTT", data.burgers[0].categories);
+
+  const setFilter = (id) => {
+    console.log("ID TO FILTER", id);
+    console.log("CATTTTTEGORY", data.burgers[0].categories);
+
+    setCategoryId(id);
+    console.log("LISTE FILTRE", filteredBurgers);
+  };
+  const filteredBurgers = data.burgers.filter((burger) =>
+    burger.categories.some((category) => category.id === categoryId)
+  );
+
   return (
     <SafeAreaView styles={styles.container}>
       <Text style={styles.header}>Burgers</Text>
@@ -72,7 +85,7 @@ export default function MenuList({ navigation }) {
           keyExtractor={({ id }, index) => id}
           horizontal={true}
           renderItem={({ item }) => (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setFilter(item.id)}>
               <View style={styles.rectangle}>
                 <Text style={styles.textFilters}>{item.name}</Text>
               </View>
@@ -83,7 +96,7 @@ export default function MenuList({ navigation }) {
       <View style={styles.listContainer}>
         <FlatList
           style={styles.listBurger}
-          data={data.burgers}
+          data={filteredBurgers}
           keyExtractor={({ id }, index) => id}
           renderItem={({ item }) => (
             <TouchableOpacity
