@@ -52,7 +52,7 @@ const listings = [
 export default function MenuList({ navigation }) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [categoryId, setCategoryId] = useState(1);
+  const [categoryId, setCategoryId] = useState(null);
 
   console.log(data);
 
@@ -66,14 +66,17 @@ export default function MenuList({ navigation }) {
 
   const setFilter = (id) => {
     console.log("ID TO FILTER", id);
-    console.log("CATTTTTEGORY", data.burgers[0].categories);
 
-    setCategoryId(id);
-    console.log("LISTE FILTRE", filteredBurgers);
+    if (id != 1) {
+      setCategoryId(id);
+    }
   };
-  const filteredBurgers = data.burgers.filter((burger) =>
-    burger.categories.some((category) => category.id === categoryId)
-  );
+
+  const filteredBurgers = categoryId
+    ? data.burgers.filter((burger) =>
+        burger.categories.some((category) => category.id === categoryId)
+      )
+    : data.burgers;
 
   return (
     <SafeAreaView styles={styles.container}>
