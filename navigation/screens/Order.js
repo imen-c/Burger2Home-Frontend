@@ -54,7 +54,7 @@ export default function Order({ navigation }) {
   }, []);
   React.useEffect(() => {
     setMyOrderList(cart);
-    console.log("Changement percu sur cart");
+    console.log("Changement percu sur cart", cart);
   }, [cart]);
 
   const getDataUser = async () => {
@@ -83,6 +83,7 @@ export default function Order({ navigation }) {
     setCart([]);
   };
   const addProduct = (id) => {
+    console.log("ID TO +", id);
     setCart((prevCart) =>
       prevCart.map((burger) => {
         if (burger.id === id) {
@@ -92,31 +93,25 @@ export default function Order({ navigation }) {
       })
     );
   };
-  const emptyProduct = () => {
-    Alert.alert("", "Votre adresse a été ajoutée", [
-      {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
-      { text: "OK", onPress: () => endAddAdress() },
-    ]);
+  const emptyProduct = (id) => {
+    console.log("ID TO -", id);
+    const index = cart.findIndex((item) => item.id === id);
+    if (cart[index].qty > 0) {
+      cart[index].qty -= 1;
+    } else {
+      cart.splice(index, 1);
+    }
+
+    setCart([...cart]);
+    /*     if (index !== -1) {
+      console.log("Trouver dans le cart");
+      const newCartItems = [...cart];
+      newCartItems.splice(index, 1);
+      setCart(newCartItems);
+    } */
   };
 
-  /*  React.useEffect(() => {
-    if (addresses.length == 3) {
-      setDisabled(true);
-    } else {
-      setDisabled(false);
-    }
-  }, [addresses]); 
-  React.useEffect(() => {
-    adressEncoded.city = city;
-    adressEncoded.code_postal = codePostal;
-    adressEncoded.street = street;
-  }, [street, codePostal, city]); */
-
-  /*  
+  /*
   
   const [tryToPay, setTryToPay] = React.useState(false);
   
