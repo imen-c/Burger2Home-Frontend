@@ -69,6 +69,8 @@ export default function MenuList({ navigation }) {
 
     if (id != 1) {
       setCategoryId(id);
+    } else {
+      setCategoryId(null);
     }
   };
 

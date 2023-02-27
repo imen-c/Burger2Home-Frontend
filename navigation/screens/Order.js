@@ -75,8 +75,32 @@ export default function Order({ navigation }) {
     }
   };
 
+  /*   
+            MANAGE CART
+   */
+
   const emptyCart = () => {
     setCart([]);
+  };
+  const addProduct = (id) => {
+    setCart((prevCart) =>
+      prevCart.map((burger) => {
+        if (burger.id === id) {
+          return { ...burger, qty: burger.qty + 1 };
+        }
+        return burger;
+      })
+    );
+  };
+  const emptyProduct = () => {
+    Alert.alert("", "Votre adresse a été ajoutée", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => endAddAdress() },
+    ]);
   };
 
   /*  React.useEffect(() => {
@@ -677,10 +701,10 @@ export default function Order({ navigation }) {
                     <View style={{ flexDirection: "row", marginTop: 20 }}>
                       <Text style={{ marginStart: 20 }}>X{item.qty}</Text>
                       <View style={{ flexDirection: "row", marginStart: 30 }}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => addProduct(item.id)}>
                           <Ionicons name="md-add" size={16} color="black" />
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => emptyProduct(item.id)}>
                           <AntDesign name="minus" size={16} color="black" />
                         </TouchableOpacity>
                       </View>
