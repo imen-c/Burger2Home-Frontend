@@ -33,7 +33,6 @@ export default function Order({ navigation }) {
   const [token, setToken] = React.useState();
   const [cart, setCart] = React.useContext(CartContext);
   const [addresses, setAddresses] = React.useState([]);
-  const [myOrderList, setMyOrderList] = React.useState(cart);
   const [totalPrice, setTotalPrice] = React.useState(0.0);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [showAddressForm, setShowAddressForm] = React.useState(false);
@@ -53,8 +52,12 @@ export default function Order({ navigation }) {
     getDataUser();
   }, []);
   React.useEffect(() => {
-    setMyOrderList(cart);
     console.log("Changement percu sur cart", cart);
+    let total = 0;
+    cart.forEach((item) => {
+      total += item.qty * item.basePrice;
+    });
+    setTotalPrice(total);
   }, [cart]);
 
   const getDataUser = async () => {
@@ -103,12 +106,6 @@ export default function Order({ navigation }) {
     }
 
     setCart([...cart]);
-    /*     if (index !== -1) {
-      console.log("Trouver dans le cart");
-      const newCartItems = [...cart];
-      newCartItems.splice(index, 1);
-      setCart(newCartItems);
-    } */
   };
 
   /*
