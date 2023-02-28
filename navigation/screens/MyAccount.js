@@ -16,9 +16,9 @@ import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 //ios 187568508686-d1ss60c460327h8uvp6nug8166plreqc.apps.googleusercontent.com
 //android 187568508686-39hd0ss5p80vmh76f1k4bnvupdve0cli.apps.googleusercontent.com
 const newUser = {
-  email: "r2@lol.com",
-  first_name: " dod",
-  last_name: "dodo",
+  email: "adibou4@lol.com",
+  first_name: " adibou4",
+  last_name: "adibou4",
 };
 
 WebBrowser.maybeCompleteAuthSession();
@@ -59,20 +59,26 @@ export default function MyAccount({ navigation }) {
       .then((res) => res.json())
       .then((data) => {
         // enter you logic when the fetch is successful
-        console.log("DATA", data.jsonValue);
+
         console.log("retrieve data ", data);
+        // storage user
         let userAsync = {
           nom: data.currentUser.last_name,
           prenom: data.currentUser.first_name,
           token: data.token,
         };
-        console.log("TOKEN de user async", data.token);
-        storeToken(data.token);
-        storeDataUser(userAsync);
+        const userJSON = JSON.stringify(userAsync);
+        AsyncStorage.setItem("@user", userJSON)
+          .then(() => console.log("USER enregistré avec succès", userJSON))
+          .catch((error) => console.log("Erreur storage du user:", error));
+        //storage token
+        AsyncStorage.setItem("@token", data.token)
+          .then(() => console.log("Token enregistré avec succès", data.token))
+          .catch((error) => console.log("Erreur storage du token:", error));
       })
       .catch((error) => {
         // enter your logic for when there is an error (ex. error toast)
-        console.log("ERROR POST", error);
+        console.log("ERROR POST USER", error);
       });
   };
 
@@ -85,17 +91,17 @@ export default function MyAccount({ navigation }) {
     setUser(useInfo);
   }
 
-  const storeToken = async (token) => {
+  /*   const storeToken = async (token) => {
     try {
-      const jsonValue = JSON.stringify(dataAsync);
+      const jsonValue = JSON.stringify(token);
       await AsyncStorage.setItem("@token", jsonValue);
       console.log("token Storage", jsonValue);
     } catch (e) {
       console.log("ASYNC storage erreur stock login");
     }
-  };
+  }; */
 
-  const storeDataUser = async (dataAsync) => {
+  /*   const storeDataUser = async (dataAsync) => {
     try {
       const jsonValue = JSON.stringify(dataAsync);
       await AsyncStorage.setItem("@user", jsonValue);
@@ -103,7 +109,7 @@ export default function MyAccount({ navigation }) {
     } catch (e) {
       console.log("ASYNC storage erreur stock login");
     }
-  };
+  }; */
 
   const getData = async () => {
     try {

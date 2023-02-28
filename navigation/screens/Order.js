@@ -40,7 +40,8 @@ export default function Order({ navigation }) {
   const [tryModify, setTryMofify] = React.useState(false);
   const [idToModify, setIdToModify] = React.useState(0);
   const [tryAddOne, setTryAddOne] = React.useState(false);
-  const [typeAlert, setTypeAlert] = React.useState("");
+
+  const [clientSecret, setClientSecret] = React.useState();
 
   const [street, setStreet] = React.useState("");
   const [codePostal, setCodePostal] = React.useState("");
@@ -50,7 +51,9 @@ export default function Order({ navigation }) {
     console.log("Premier useEffect");
     //console.log("CART RECU PAR ORDER ", cart);
     getDataUser();
+    initPaymentSheet();
   }, []);
+
   React.useEffect(() => {
     console.log("Changement percu sur cart", cart);
     let total = 0;
@@ -58,6 +61,7 @@ export default function Order({ navigation }) {
       total += item.qty * item.basePrice;
     });
     setTotalPrice(total);
+    getDataUser();
   }, [cart]);
 
   const getDataUser = async () => {
@@ -113,30 +117,12 @@ export default function Order({ navigation }) {
   const [tryToPay, setTryToPay] = React.useState(false);
   
   
-  const [clientSecret, setClientSecret] = React.useState();
   const [cartToPost, setCartToPost] = React.useState();
 */
   //const [disabled, setDisabled] = React.useState(false);
   //const { initPaymentSheet, presentPaymentSheet } = useStripe();
   //const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
-  /*   const fetchIntentPayement = async () => {
-    if (token) {
-      console.log("Token present pour inten");
-      let tok = token.toString();
-      await fetch("http://10.0.2.2:8000/payment/stripe/intent", {
-        method: "GET",
-      })
-        .then((response) => response.json())
-        .then((json) => {
-          setClientSecret(json);
-
-          console.log("get secretClient");
-        })
-        .catch((error) => console.error(error))
-        .finally(() => setLoading(false));
-    }
-  }; */
   /*   const proceedPayement = async () => {
     //let pi = "pi_3MRNWCHp17SDAKMQ0opFA2vX_secret_h8A2JRjeZNl9MNWSWFm6OXU6x";
     // ici envoyer payement intent async le faire dans le useEffect 1:03:50
@@ -236,6 +222,12 @@ export default function Order({ navigation }) {
         {tryModify && <ModifyAdressView />}
         {(addresses === undefined || addresses.length == 0 || tryAddOne) && (
           <SafeAreaView>
+            <TouchableOpacity
+              style={styles.modalClose}
+              onPress={() => closeOneAddress()}
+            >
+              <AntDesign name="closecircle" size={24} color="black" />
+            </TouchableOpacity>
             <Text
               style={{
                 fontSize: 20,
@@ -290,6 +282,12 @@ export default function Order({ navigation }) {
     return (
       <SafeAreaView>
         <View>
+          <TouchableOpacity
+            style={styles.modalClose}
+            onPress={() => closeAdressReceived()}
+          >
+            <AntDesign name="closecircle" size={24} color="black" />
+          </TouchableOpacity>
           <Text style={styles.modalTitle}>Options de livraison</Text>
           <Text style={styles.modalSubTitle}>Choisissez une adresse:</Text>
           <View style={{ marginTop: 10, marginLeft: "80%" }}>
@@ -442,6 +440,14 @@ export default function Order({ navigation }) {
     setShowAddressForm(true);
     console.log("SHOWADRESSFORM", showAddressForm);
   }
+  function closeOneAddress() {
+    setShowAddressForm(false);
+    console.log("SHOWADRESSFORM", showAddressForm);
+  }
+  function closeAdressReceived() {
+    setShowAddressForm(false);
+    console.log("SHOWADRESSFORM", showAddressForm);
+  }
   const handleStreet = (text) => {
     console.log("street", text);
     setStreet(text);
@@ -461,8 +467,6 @@ export default function Order({ navigation }) {
       city: city,
     };
 
-    console.log("ONE ADDRESS", oneAddress);
-
     await fetch("http://10.0.2.2:8000/addresses", {
       method: "POST",
       headers: {
@@ -474,7 +478,7 @@ export default function Order({ navigation }) {
     })
       .then((res) => {
         res.json;
-        console.log("STATUT", res.status);
+        console.log("STATUT POST ADDRESS", res.status);
       })
       .then((data) => {
         // enter you logic when the fetch is successful
@@ -495,7 +499,7 @@ export default function Order({ navigation }) {
       })
         .then((response) => response.json())
         .then((json) => setAddresses(json))
-        .catch((error) => console.error(error));
+        .catch((error) => console.error("ERREUR getAdresses()", error));
       //.finally(() => setLoading(false));
 
       console.log("Addresses recçue", addresses);
@@ -618,6 +622,32 @@ export default function Order({ navigation }) {
         setErrorMessage(error);
         console.error("There was an error!", error);
       });
+  };
+  /*   
+            MANAGE PAYEMENT
+   */
+  const checkout = () => {
+    console.log("CHECKOUT");
+  };
+  const fetchIntentPayement = async () => {
+    if (token) {
+      console.log("Token present pour inten");
+      let tok = token.toString();
+      await fetch("http://10.0.2.2:8000/payment/stripe/intent", {
+        method: "GET",
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          setClientSecret(json);
+
+          console.log("SECRET-CLIENT SUCCEED");
+        })
+        .catch((error) => console.error(error));
+      //.finally(() => setLoading(false));
+    }
+  };
+  const initPaymentSheet = async () => {
+    await fetchIntentPayement();
   };
 
   return (
