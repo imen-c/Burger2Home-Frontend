@@ -41,7 +41,9 @@ export default function Order({ navigation }) {
   const [idToModify, setIdToModify] = React.useState(0);
   const [tryAddOne, setTryAddOne] = React.useState(false);
 
-  const [clientSecret, setClientSecret] = React.useState();
+  const [clientSecret, setClientSecret] = React.useState(null);
+
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const [street, setStreet] = React.useState("");
   const [codePostal, setCodePostal] = React.useState("");
@@ -51,7 +53,7 @@ export default function Order({ navigation }) {
     console.log("Premier useEffect");
     //console.log("CART RECU PAR ORDER ", cart);
     getDataUser();
-    initPaymentSheet();
+    //fetchIntentPayement();
   }, []);
 
   React.useEffect(() => {
@@ -63,6 +65,11 @@ export default function Order({ navigation }) {
     setTotalPrice(total);
     getDataUser();
   }, [cart]);
+  React.useEffect(() => {
+    if (clientSecret) {
+      initialisePaymentSheet();
+    }
+  }, [clientSecret]);
 
   const getDataUser = async () => {
     try {
@@ -120,7 +127,6 @@ export default function Order({ navigation }) {
   const [cartToPost, setCartToPost] = React.useState();
 */
   //const [disabled, setDisabled] = React.useState(false);
-  //const { initPaymentSheet, presentPaymentSheet } = useStripe();
   //const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
 
   /*   const proceedPayement = async () => {
@@ -310,7 +316,7 @@ export default function Order({ navigation }) {
                         : {}
                     }
                     onPress={() => {
-                      setAdressSelected(item);
+                      handleAdressSelected(item);
                     }}
                   >
                     <View style={styles.subRectangle}>
@@ -436,6 +442,7 @@ export default function Order({ navigation }) {
     );
   };
   function handleConfirmButton() {
+    fetchIntentPayement();
     getAddresses();
     setShowAddressForm(true);
     console.log("SHOWADRESSFORM", showAddressForm);
@@ -448,6 +455,9 @@ export default function Order({ navigation }) {
     setShowAddressForm(false);
     console.log("SHOWADRESSFORM", showAddressForm);
   }
+  const handleAdressSelected = (item) => {
+    setAdressSelected(item);
+  };
   const handleStreet = (text) => {
     console.log("street", text);
     setStreet(text);
@@ -627,11 +637,12 @@ export default function Order({ navigation }) {
             MANAGE PAYEMENT
    */
   const checkout = () => {
+    openPaymentSheet();
     console.log("CHECKOUT");
   };
+
   const fetchIntentPayement = async () => {
     if (token) {
-      console.log("Token present pour inten");
       let tok = token.toString();
       await fetch("http://10.0.2.2:8000/payment/stripe/intent", {
         method: "GET",
@@ -640,14 +651,40 @@ export default function Order({ navigation }) {
         .then((json) => {
           setClientSecret(json);
 
-          console.log("SECRET-CLIENT SUCCEED");
+          console.log("SECRET-CLIENT SUCCEED", json);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => console.error("ERREUR CLIENT SECRET", error));
       //.finally(() => setLoading(false));
     }
   };
-  const initPaymentSheet = async () => {
-    await fetchIntentPayement();
+
+  const initialisePaymentSheet = async () => {
+    if (!clientSecret) {
+      console.log("clientSecret NOT DETECTED init");
+      return;
+    }
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "Burger2Home, Inc.",
+      paymentIntentClientSecret: clientSecret,
+    });
+    console.log("SUCCESS initpayementsheet");
+    if (error) {
+      Alert.alert("Erreur initialisePaymentSheet", error.message);
+    }
+  };
+
+  const openPaymentSheet = async () => {
+    if (!clientSecret) {
+      console.log("clientSecret NOT DETECTED present");
+      return;
+    }
+    const { error } = await presentPaymentSheet({ clientSecret });
+
+    if (error) {
+      Alert.alert(`Error Payement Stripe code: ${error.code}`, error.message);
+    } else {
+      Alert.alert("Success", "Your payment is confirmed!");
+    }
   };
 
   return (
