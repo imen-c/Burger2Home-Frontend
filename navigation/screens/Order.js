@@ -44,6 +44,7 @@ export default function Order({ navigation }) {
   const [clientSecret, setClientSecret] = React.useState(null);
 
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const [cartToPost, setCartToPost] = React.useState();
 
   const [street, setStreet] = React.useState("");
   const [codePostal, setCodePostal] = React.useState("");
@@ -51,9 +52,8 @@ export default function Order({ navigation }) {
 
   React.useEffect(() => {
     console.log("Premier useEffect");
-    //console.log("CART RECU PAR ORDER ", cart);
+
     getDataUser();
-    //fetchIntentPayement();
   }, []);
 
   React.useEffect(() => {
@@ -119,81 +119,21 @@ export default function Order({ navigation }) {
     setCart([...cart]);
   };
 
-  /*
-  
-  const [tryToPay, setTryToPay] = React.useState(false);
-  
-  
-  const [cartToPost, setCartToPost] = React.useState();
-*/
-  //const [disabled, setDisabled] = React.useState(false);
-  //const [code200AdressReceived, setCodeAdressReceived] = React.useState(false);
-
-  /*   const proceedPayement = async () => {
-    //let pi = "pi_3MRNWCHp17SDAKMQ0opFA2vX_secret_h8A2JRjeZNl9MNWSWFm6OXU6x";
-    // ici envoyer payement intent async le faire dans le useEffect 1:03:50
-    // setClientsecret repose .data.createPaymentIntent.clientSecret
-    //navigation.navigate("Payement");
-    setModalVisible(false);
-    const { error } = await initPaymentSheet({
-      merchantDisplayName: "Burger2Home, Inc.",
-      //customerId: customer,
-      //customerEphemeralKeySecret: ephemeralKey,
-      paymentIntentClientSecret: clientSecret,
-      // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
-      //methods that complete payment after a delay, like SEPA Debit and Sofort.
-      //allowsDelayedPaymentMethods: true,
-      //defaultBillingDetails: {
-      //  name: 'Jane Doe',
-      //}
-    });
-    console.log("SUCCESS PROCEDD PAYment");
-    if (!error) {
-      setLoading(true);
-    }
-  }; */
-  /*   const openPaymentSheet = async () => {
-    //console.log("JE RENTRE DANS OPENPAYEMENTSHEET");
-    //console.log("DERNIER CLIENT SECRET", clientSecret);
-    const { error } = await presentPaymentSheet({ clientSecret });
-
-    if (error) {
-      Alert.alert(`Error Payement Stripe code: ${error.code}`, error.message);
-    } else {
-      todo(); // vider le panier
-      Alert.alert("Success", "Your payment is confirmed!");
-      setModalVisible(false);
-    }
-  }; */
-  /*   const checkout = () => {
-    console.log("CART", cart);
-    postCart();
-    openPaymentSheet();
-
-    // save the order!
-  }; */
-  /*   const VerifyLogin = () => {
-    getAddresses();
-    console.log("Addresses recçue", addresses);
-    console.log("passer commande");
-    console.log("USER ", user);
-    console.log("TOKEN passer commande", token);
-    setModalVisible(true);
-  }; */
-  /*  const postCart = async () => {
+  const postCart = () => {
     var list = [];
-    let i = 0;
-    for (i; i < orderList.length; i++) {
+    cart.map((item) => {
+      console.log(item.name);
       var product = {
-        id: orderList[i].id,
-        quantity: orderList[i].qty,
+        id: item.id,
+        quantity: item.qty,
       };
       list.push(product);
-    }
-    setCartToPost(list);
-    console.log("LA LISTE", list);
+    });
 
-    await fetch("http://10.0.2.2:8000/baskets", {
+    setCartToPost(list);
+    console.log("CART TO POST", cartToPost);
+
+    fetch("http://10.0.2.2:8000/baskets", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -208,14 +148,14 @@ export default function Order({ navigation }) {
       })
       .then((data) => {
         // enter you logic when the fetch is successful
-        console.log("DATA", data);
-        todo();
+        console.log("DATA rceive FROM POST CART", data);
+        setCart([]);
       })
       .catch((error) => {
         // enter your logic for when there is an error (ex. error toast)
-        console.log("ERROR POst adrress", error);
+        console.log("ERROR POst CART", error);
       });
-  }; */
+  };
 
   /*   
             MANAGE ADDRESS
@@ -684,9 +624,14 @@ export default function Order({ navigation }) {
       Alert.alert(`Error Payement Stripe code: ${error.code}`, error.message);
     } else {
       Alert.alert("Success", "Your payment is confirmed!");
+      saveOrder();
     }
   };
 
+  const saveOrder = () => {
+    postCart();
+    setShowAddressForm(false);
+  };
   return (
     <SafeAreaView style={styles.safearea}>
       {!showAddressForm && (
