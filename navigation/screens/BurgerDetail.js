@@ -7,23 +7,28 @@ import React, {
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { CartContext } from "../CartContext";
 import { orderListManage } from "./Order";
-import { AntDesign, Octicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Octicons,
+  MaterialIcons,
+  Ionicons,
+} from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS } from "../Colors";
 
 const BurgerDetail = ({ navigation, route }) => {
   const [cart, setCart] = useContext(CartContext);
 
+  const addProduct = () => {};
+
+  const emptyProduct = () => {};
+
   const addToCart = (item) => {
-    //const actualList = cartObject.assign([], cart);
     const existingBurger = cart.find(
       (item) => item.id === route.params.item.id
     );
 
     if (existingBurger) {
-      //existingBurger.qty += 1;
-
-      //setCart(actualList);
       setCart(
         cart.map((burger) => {
           if (burger.id === existingBurger.id) {
@@ -33,29 +38,9 @@ const BurgerDetail = ({ navigation, route }) => {
         })
       );
     } else {
-      /*  var burger = {
-        id: route.params.item.id,
-        name: route.params.item.name,
-        qty: 1,
-        price: route.params.item.basePrice,
-      };
-      actualList.push(burger);
-      setCart(actualList); */
       setCart([...cart, { ...route.params.item, qty: 1 }]);
     }
-
-    //console.log("ACTUAL LIST", actualList);
   };
-
-  /*   const storeCart = async (dataAsync) => {
-    try {
-      let jsonValue = JSON.stringify(dataAsync);
-      await AsyncStorage.setItem("@cart", jsonValue);
-      console.log("JSON Storage CART", jsonValue);
-    } catch (e) {
-      console.log("ASYNC storage erreur Cart", e.message);
-    }
-  }; */
 
   return (
     <View style={styles.container}>
@@ -84,6 +69,17 @@ const BurgerDetail = ({ navigation, route }) => {
           Allergens <Octicons name="info" size={18} color="black" />
         </Text>
       </TouchableOpacity>
+      <View style={{ flexDirection: "row", marginTop: 20 }}>
+        {/*   <Text style={{ marginStart: 20 }}>X{item.qty}</Text> */}
+        <View style={{ flexDirection: "row", marginStart: 30 }}>
+          <TouchableOpacity onPress={() => addProduct()}>
+            <Ionicons name="md-add" size={16} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => emptyProduct()}>
+            <AntDesign name="minus" size={16} color="black" />
+          </TouchableOpacity>
+        </View>
+      </View>
       <TouchableOpacity style={styles.addButton} onPress={() => addToCart()}>
         <Text
           style={{
