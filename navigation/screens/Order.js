@@ -27,6 +27,7 @@ import {
 } from "@stripe/stripe-react-native";
 import { COLORS } from "../Colors";
 import { CartContext } from "../CartContext";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 export default function Order({ navigation }) {
   const [user, setUser] = React.useState();
@@ -34,12 +35,12 @@ export default function Order({ navigation }) {
   const [cart, setCart] = React.useContext(CartContext);
   const [addresses, setAddresses] = React.useState([]);
   const [totalPrice, setTotalPrice] = React.useState(0.0);
-  const [modalVisible, setModalVisible] = React.useState(false);
   const [showAddressForm, setShowAddressForm] = React.useState(false);
   const [adresseSelected, setAdressSelected] = React.useState();
   const [tryModify, setTryMofify] = React.useState(false);
   const [idToModify, setIdToModify] = React.useState(0);
   const [tryAddOne, setTryAddOne] = React.useState(false);
+  const [isCartEmpty, setIsCartEmpty] = React.useState(true);
 
   const [clientSecret, setClientSecret] = React.useState(null);
 
@@ -58,12 +59,16 @@ export default function Order({ navigation }) {
 
   React.useEffect(() => {
     console.log("Changement percu sur cart", cart);
+    setIsCartEmpty(false);
     let total = 0;
     cart.forEach((item) => {
       total += item.qty * item.basePrice;
     });
     setTotalPrice(total);
     getDataUser();
+    if (cart.length === 0) {
+      setIsCartEmpty(true);
+    }
   }, [cart]);
   React.useEffect(() => {
     if (clientSecret) {
@@ -660,6 +665,12 @@ export default function Order({ navigation }) {
           </View>
 
           <View>
+            {isCartEmpty && (
+              <Text style={styles.flatContainer}>
+                Votre panier est vide veuillez ajouter des articles merci
+              </Text>
+            )}
+
             <FlatList
               style={styles.listOrder}
               data={cart}
@@ -787,8 +798,12 @@ const styles = StyleSheet.create({
   listOrder: {
     backgroundColor: COLORS.grayOne,
     top: 130,
+
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
+    width: "100%",
+  },
+  flatContainer: {
     width: "100%",
   },
   orderCell: {
