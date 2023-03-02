@@ -18,10 +18,68 @@ import { COLORS } from "../Colors";
 
 const BurgerDetail = ({ navigation, route }) => {
   const [cart, setCart] = useContext(CartContext);
+  const [quantity, setQuantity] = useState(0);
 
-  const addProduct = () => {};
+  React.useEffect(() => {
+    if (cart.length > 0) {
+      try {
+        const index = cart.findIndex(
+          (item) => item.id === route.params.item.id
+        );
+        setQuantity(cart[index].qty);
+      } catch {
+        console.log("pas present dans le panier");
+      }
+    }
+  }, [cart]);
 
-  const emptyProduct = () => {};
+  const addProduct = () => {
+    console.log("ADD PRODUCT");
+    const existingBurger = cart.find(
+      (item) => item.id === route.params.item.id
+    );
+
+    if (existingBurger) {
+      setCart(
+        cart.map((burger) => {
+          if (burger.id === existingBurger.id) {
+            return { ...burger, qty: burger.qty + 1 };
+          }
+          return burger;
+        })
+      );
+    } else {
+      setCart([...cart, { ...route.params.item, qty: 1 }]);
+    }
+  };
+
+  const emptyProduct = () => {
+    console.log("EMPTY PRODUCT");
+    if (quantity > 0) {
+      setCart((prevCart) =>
+        prevCart.map((burger) => {
+          if (burger.id === route.params.item.id) {
+            return { ...burger, qty: burger.qty - 1 };
+          }
+          return burger;
+        })
+      );
+    }
+    /*     if (cart.length > 0) {
+      const index = cart.findIndex((item) => item.id === route.params.item.id);
+      if (cart[index].qty > 0) {
+        const index = cart.findIndex(
+          (item) => item.id === route.params.item.id
+        );
+        cart[index].qty -= 1;
+      } else {
+        cart.splice(index, 1);
+        setQuantity(0);
+      }
+    }
+
+    setCart([...cart]); */
+  };
 
   const addToCart = (item) => {
     const existingBurger = cart.find(
@@ -70,7 +128,7 @@ const BurgerDetail = ({ navigation, route }) => {
         </Text>
       </TouchableOpacity>
       <View style={{ flexDirection: "row", marginTop: 20 }}>
-        {/*   <Text style={{ marginStart: 20 }}>X{item.qty}</Text> */}
+        <Text style={{ marginStart: 20 }}>X{quantity}</Text>
         <View style={{ flexDirection: "row", marginStart: 30 }}>
           <TouchableOpacity onPress={() => addProduct()}>
             <Ionicons name="md-add" size={16} color="black" />
@@ -137,7 +195,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   allergButtons: {
-    marginTop: 30,
+    marginTop: 20,
     marginStart: 20,
   },
   addButton: {
@@ -145,7 +203,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: COLORS.darkRed,
     borderRadius: 20,
-    marginTop: 20,
+    marginTop: 15,
     marginStart: 20,
     marginEnd: 20,
     height: 40,
