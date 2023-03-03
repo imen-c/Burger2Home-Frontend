@@ -16,8 +16,11 @@ import {
   ImageBackground,
 } from "react-native";
 import AnimatedLottieView from "lottie-react-native";
+import i18n from "../language/i18n";
+import { useTranslation, Trans } from "react-i18next";
 
 export default function Home({ navigation }) {
+  const { t } = useTranslation();
   React.useEffect(() => {
     console.log("changement sur User Load des addresses");
     //console.log("token", JSON.parse(token));
@@ -38,7 +41,23 @@ export default function Home({ navigation }) {
 
     return unsubscribe;
   }, [navigation]);
-
+  const lngs = {
+    en: { nativeName: "English" },
+    fr: { nativeName: "Français" },
+    ar: { nativeName: "عربي" },
+  };
+  const french = () => {
+    const frKey = Object.keys(lngs)[1];
+    i18n.changeLanguage(frKey);
+  };
+  const arab = () => {
+    const arKey = Object.keys(lngs)[2];
+    i18n.changeLanguage(arKey);
+  };
+  const english = () => {
+    const enKey = Object.keys(lngs)[0];
+    i18n.changeLanguage(enKey);
+  };
   const [token, setToken] = React.useState();
   const [user, setUser] = React.useState();
   const [test, setTest] = React.useState();
@@ -73,69 +92,74 @@ export default function Home({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        {test && <UserConnected />}
-        {!test && (
-          <View>
-            <View style={styles.imageContainer}>
-              <Image
-                style={styles.avatar}
-                source={require("../../assets/profil.png")}
-              />
-              <Text style={styles.title}>Welcome to Burger2Home</Text>
-            </View>
+      {test && <UserConnected />}
+      {!test && (
+        <View>
+          <View style={styles.imageContainer}>
+            <Image
+              style={styles.avatar}
+              source={require("../../assets/profil.png")}
+            />
+            <Text style={styles.title}>{t("home.title")}</Text>
+          </View>
+          <View
+            style={{
+              backgroundColor: COLORS.grayOne,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }}
+          >
+            <Text style={styles.questionTitle}>{t("home.hook")}</Text>
             <View
               style={{
-                backgroundColor: COLORS.grayOne,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
+                marginTop: 10,
+                height: 100,
+                borderRadius: 10,
+                backgroundColor: COLORS.lightRed,
+                marginStart: 15,
+                marginEnd: 15,
               }}
             >
-              <Text style={styles.questionTitle}>
-                Envie de gouter à un de nos délicieux menu?
-              </Text>
-              <View
-                style={{
-                  marginTop: 10,
-                  height: 100,
-                  borderRadius: 10,
-                  backgroundColor: COLORS.lightRed,
-                  marginStart: 15,
-                  marginEnd: 15,
-                }}
-              >
-                <AnimatedLottieView
-                  source={require("../../assets/walkBurger.json")}
-                  autoPlay
-                  loop
-                />
-              </View>
+              <AnimatedLottieView
+                source={require("../../assets/walkBurger.json")}
+                autoPlay
+                loop
+              />
+            </View>
 
-              <View style={styles.connectButton}>
-                <TouchableOpacity onPress={() => navigation.navigate("MyB2H")}>
-                  <Text
-                    style={{
-                      color: COLORS.white,
-                      fontSize: 18,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Connecte-toi
-                    <AntDesign
-                      style={{ textAlignVertical: "center" }}
-                      name="login"
-                      size={24}
-                      color="white"
-                    />
-                  </Text>
-
-                  <View style={styles.fidelityCard}></View>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.connectButton}>
+              <TouchableOpacity onPress={() => navigation.navigate("MyB2H")}>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {t("home.login")}
+                  <AntDesign
+                    style={{ textAlignVertical: "center" }}
+                    name="login"
+                    size={24}
+                    color="white"
+                  />
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.lnButton}>
+              <TouchableOpacity style={styles.button} onPress={() => english()}>
+                <Text style={styles.itext}>{lngs.en.nativeName}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={() => french()}>
+                <Text style={styles.itext}>{lngs.fr.nativeName}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={() => arab()}>
+                <Text style={styles.itext}>{lngs.ar.nativeName}</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        )}
-      </ScrollView>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -234,5 +258,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
     color: "#fff",
+  },
+  lnButton: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginVertical: 50,
+  },
+  button: {
+    padding: 10,
+    borderRadius: 10,
+  },
+  itext: {
+    fontSize: 18,
   },
 });
