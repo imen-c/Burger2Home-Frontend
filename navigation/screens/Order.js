@@ -65,6 +65,7 @@ export default function Order({ navigation }) {
       total += item.qty * item.basePrice;
     });
     setTotalPrice(total);
+
     getDataUser();
     if (cart.length === 0) {
       setIsCartEmpty(true);
@@ -125,18 +126,10 @@ export default function Order({ navigation }) {
   };
 
   const postCart = () => {
-    var list = [];
-    cart.map((item) => {
-      console.log(item.name);
-      var product = {
-        id: item.id,
-        quantity: item.qty,
-      };
-      list.push(product);
-    });
-
-    setCartToPost(list);
-    console.log("CART TO POST", cartToPost);
+    const cartItems = cart.map((item) => ({
+      id: item.id,
+      quantity: item.qty,
+    }));
 
     fetch("http://10.0.2.2:8000/baskets", {
       method: "POST",
@@ -145,7 +138,7 @@ export default function Order({ navigation }) {
         Authorization: `Bearer ${token.toString()}`,
       },
 
-      body: JSON.stringify({ burgers: cartToPost }),
+      body: JSON.stringify({ burgers: cartItems }),
     })
       .then((res) => {
         res.json;
@@ -387,10 +380,13 @@ export default function Order({ navigation }) {
     );
   };
   function handleConfirmButton() {
-    fetchIntentPayement();
-    getAddresses();
-    setShowAddressForm(true);
-    console.log("SHOWADRESSFORM", showAddressForm);
+    if (totalPrice === 0) {
+    } else {
+      fetchIntentPayement();
+      getAddresses();
+      setShowAddressForm(true);
+      console.log("SHOWADRESSFORM", showAddressForm);
+    }
   }
   function closeOneAddress() {
     setShowAddressForm(false);

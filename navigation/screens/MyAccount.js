@@ -16,9 +16,9 @@ import { requestFrame } from "react-native-reanimated/lib/reanimated2/core";
 //ios 187568508686-d1ss60c460327h8uvp6nug8166plreqc.apps.googleusercontent.com
 //android 187568508686-39hd0ss5p80vmh76f1k4bnvupdve0cli.apps.googleusercontent.com
 const newUser = {
-  email: "test2@lol.com",
-  first_name: " test2",
-  last_name: "test2",
+  email: "test10@lol.com",
+  first_name: " test10",
+  last_name: "test10",
 };
 
 WebBrowser.maybeCompleteAuthSession();
@@ -159,7 +159,7 @@ export default function MyAccount({ navigation }) {
           />
           <Button
             style={{ width: 300, height: 40 }}
-            title=" new"
+            title="Connexion"
             onPress={() => {
               postUser();
             }}
