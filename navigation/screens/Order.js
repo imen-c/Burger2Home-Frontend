@@ -27,10 +27,13 @@ import {
 } from "@stripe/stripe-react-native";
 import { COLORS } from "../Colors";
 import { CartContext } from "../CartContext";
+import { useIsFocused } from "@react-navigation/native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import i18n from "../language/i18n";
+import { useTranslation, Trans } from "react-i18next";
 
 export default function Order({ navigation }) {
-  const [user, setUser] = React.useState();
+  const [user, setUser] = React.useState(null);
   const [token, setToken] = React.useState();
   const [cart, setCart] = React.useContext(CartContext);
   const [addresses, setAddresses] = React.useState([]);
@@ -50,12 +53,21 @@ export default function Order({ navigation }) {
   const [street, setStreet] = React.useState("");
   const [codePostal, setCodePostal] = React.useState("");
   const [city, setCity] = React.useState("");
+  const isFocused = useIsFocused();
+
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     console.log("Premier useEffect");
 
     getDataUser();
   }, []);
+  React.useEffect(() => {
+    if (isFocused) {
+      console.log("FOCUS");
+      getDataUser();
+    }
+  }, [isFocused]);
 
   React.useEffect(() => {
     console.log("Changement percu sur cart", cart);
@@ -64,7 +76,7 @@ export default function Order({ navigation }) {
     cart.forEach((item) => {
       total += item.qty * item.basePrice;
     });
-    setTotalPrice(total);
+    setTotalPrice(total.toFixed(2));
 
     getDataUser();
     if (cart.length === 0) {
@@ -633,6 +645,10 @@ export default function Order({ navigation }) {
     postCart();
     setShowAddressForm(false);
   };
+  const noUserNeedConnect = () => {
+    navigation.navigate("MyB2H");
+    setShowAddressForm(false);
+  };
   return (
     <SafeAreaView style={styles.safearea}>
       {!showAddressForm && (
@@ -662,9 +678,7 @@ export default function Order({ navigation }) {
 
           <View>
             {isCartEmpty && (
-              <Text style={styles.flatContainer}>
-                Votre panier est vide veuillez ajouter des articles merci
-              </Text>
+              <Text style={styles.flatContainer}>{t("home.com")}</Text>
             )}
 
             <FlatList
@@ -759,8 +773,8 @@ export default function Order({ navigation }) {
                 Welcome
               </Text> */}
               <TouchableOpacity
-                //style={styles.modalConnect}
-                onPress={() => navigation.navigate("MyB2H")}
+                style={styles.modalConnect}
+                onPress={() => noUserNeedConnect()}
               >
                 <Text>Connectez-Vous</Text>
               </TouchableOpacity>

@@ -1,6 +1,6 @@
 import { COLORS } from "../Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as React from "react";
+import React, { useContext } from "react";
 import LottieView from "lottie-react-native";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -18,15 +18,25 @@ import {
 import AnimatedLottieView from "lottie-react-native";
 import i18n from "../language/i18n";
 import { useTranslation, Trans } from "react-i18next";
+import { LanguageContext } from "../LanguageContext";
 
 export default function Home({ navigation }) {
   const { t } = useTranslation();
+  const [first, setFirst] = React.useState(true);
+  React.useEffect(() => {
+    if (first) {
+      console.log("Mise à zero variable user");
+      AsyncStorage.removeItem("@user");
+      setFirst(false);
+    }
+  }, []);
   React.useEffect(() => {
     console.log("changement sur User Load des addresses");
     //console.log("token", JSON.parse(token));
 
     let us = getDataUser();
     setUser(us);
+
     console.log("US", us);
   }, [user]);
 
